@@ -32,6 +32,7 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(ev)
     vim.opt_local.spell = true
     vim.opt_local.spelllang = "en_us"
+    vim.b[ev.buf].snacks_image_attached = true    -- Snacks: don't draw over the LaTeX you are writing
     -- spelling suggestions in a small searchable list instead of a full screen
     -- suggestions for what's under the cursor: the grammar fix, or the spelling
     vim.keymap.set("n", "z=", function() M.suggest() end, { buffer = ev.buf, desc = "Suggestions (grammar / spelling)" })

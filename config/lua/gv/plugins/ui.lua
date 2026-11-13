@@ -210,6 +210,12 @@ return {
       },
       picker = { enabled = true, layout = { preset = "default" } },
       explorer = { enabled = true },
+      -- pictures and $maths$ drawn inside Markdown files (kitty); not in .tex files (lua/gv/tex.lua)
+      image = {
+        enabled = true,
+        doc = { inline = true, float = false, max_width = 80, max_height = 20 },
+        math = { enabled = true, latex = { font_size = "large" } },
+      },
       indent = { enabled = false },   -- off, as in your LunarVim (Space ui turns them on)
       notifier = { enabled = true, style = "fancy", top_down = false },
       input = { enabled = true },

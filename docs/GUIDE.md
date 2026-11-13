@@ -140,6 +140,13 @@ The first time in a folder Claude asks whether you trust it: press Enter, then
 use the key again. Claude Code must be installed and logged in once
 (`claude` in a terminal).
 
+### Maths in Markdown
+
+In any Markdown file (`.md` notes, the docs and Stack Exchange readers),
+`$...$` and `$$...$$` are drawn as typeset equations in kitty, and so are
+`![](picture.png)` links. Move the cursor onto an equation to edit its source.
+`.tex` files are never drawn over: there you see your LaTeX.
+
 ## 5. GaussianTeX: projects
 
 `gtex`, the GaussianTeX app, `Space t` in gv or `t` on the start screen:

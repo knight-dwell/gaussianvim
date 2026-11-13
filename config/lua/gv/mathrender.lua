@@ -90,6 +90,9 @@ end
 
 function M.render(buf)
   if not (Snacks and Snacks.image and Snacks.image.supports_terminal()) then return end
+  -- Markdown with the latex parser installed: Snacks typesets the maths itself
+  if vim.bo[buf].filetype == "markdown" and pcall(vim.treesitter.language.add, "latex")
+    and vim.treesitter.language.add("latex") then return end
   if vim.fn.executable("pdflatex") == 0 or vim.fn.executable("magick") == 0 then return end
   local color = fg_hex()
   local width = 100

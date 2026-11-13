@@ -130,7 +130,12 @@ fi
 # ── 5. plugins, language servers ───────────────────────────────────────────────
 say "Plugins and language servers (a few minutes)"
 export NVIM_APPNAME=gaussianvim
+# a recent tree-sitter CLI (builds the latex parser that typesets $maths$ in Markdown)
+if command -v npm >/dev/null && ! tree-sitter --version 2>/dev/null | grep -qE " 0\.(2[6-9]|[3-9][0-9])"; then
+  npm install -g --prefix "$HOME/.local" tree-sitter-cli >/dev/null 2>&1 || note "tree-sitter CLI didn't install (maths in Markdown stays as text)"
+fi
 "$G/nvim/bin/nvim" --headless "+Lazy! restore" +qa 2>/dev/null || "$G/nvim/bin/nvim" --headless "+Lazy! sync" +qa
+"$G/nvim/bin/nvim" --headless -c 'lua require("nvim-treesitter").install({ "latex" }):wait(300000)' -c qa 2>/dev/null || true
 "$G/nvim/bin/nvim" --headless -c "MasonInstall basedpyright ruff clangd bash-language-server lua-language-server fortls texlab ltex-ls-plus debugpy" -c qa || \
   note "some language servers didn't install; open gv and run :Mason"
 

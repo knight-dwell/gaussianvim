@@ -6,7 +6,9 @@ local languages = {
   "python", "lua", "vim", "vimdoc", "query", "bash", "c", "cpp", "fortran", "julia",
   "markdown", "markdown_inline", "json", "yaml", "toml", "make", "cmake",
   "bibtex", "regex", "diff", "gitcommit", "html", "css", "javascript",
+  "latex",   -- only to typeset $maths$ in Markdown (Snacks.image); .tex files keep vimtex's highlighting
 }
+local NO_TS = { tex = true, plaintex = true }   -- vimtex: its syntax drives spell check and the maths aliases
 
 return {
   -- Syntax highlighting + smarter indentation (tree-sitter)
@@ -19,6 +21,7 @@ return {
       require("nvim-treesitter").install(languages)
       vim.api.nvim_create_autocmd("FileType", {
         callback = function(ev)
+          if NO_TS[vim.bo[ev.buf].filetype] then return end
           if pcall(vim.treesitter.start, ev.buf) then
             vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
           end
