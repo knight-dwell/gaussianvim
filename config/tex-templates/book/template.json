@@ -1,0 +1,6 @@
+{
+  "name": "Book (chapters, contents)",
+  "description": "book class with front matter (title, preface, contents), chapters in their own files, appendix and a bibliography",
+  "main": "main.tex",
+  "order": 6
+}

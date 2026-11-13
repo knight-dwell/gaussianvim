@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2b4678"/><stop offset="1" stop-color="#583e5b"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="116" height="116" rx="28" fill="url(#bg)"/>
+  <!-- a Gaussian: GaussianVim's family -->
+  <path d="M14 92 C 36 92, 44 30, 64 30 S 92 92, 114 92" fill="none" stroke="#adc6ff" stroke-width="6" stroke-linecap="round"/>
+  <!-- TeX, with the E dropped as in the logo -->
+  <text x="37" y="86" font-family="Latin Modern Roman, Computer Modern, serif" font-size="34" font-weight="700" fill="#ffffff">T</text>
+  <text x="56" y="94" font-family="Latin Modern Roman, Computer Modern, serif" font-size="34" font-weight="700" fill="#ffffff">E</text>
+  <text x="76" y="86" font-family="Latin Modern Roman, Computer Modern, serif" font-size="34" font-weight="700" fill="#ffffff">X</text>
+</svg>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GaussianVim Dictionary</title>
+<link rel="stylesheet" href="katex/katex.min.css">
+<link rel="stylesheet" href="app.css">
+<script src="katex/katex.min.js"></script>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="brand">
+      <img src="icon.svg" alt="">
+      <div>
+        <h1>GaussianVim Dictionary</h1>
+        <p>Type what you want to do. Click a card (or Enter) to copy it.</p>
+      </div>
+    </div>
+    <div class="count" id="count"></div>
+  </div>
+  <label class="search">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"/></svg>
+    <input id="q" type="text" autocomplete="off" spellcheck="false"
+           placeholder="e.g.  make a fraction · delete a line · stop the program · greek alpha · compile pdf">
+    <button id="clear" title="Clear (Esc)">×</button>
+  </label>
+  <nav id="groups"></nav>
+  <nav id="cats"></nav>
+</header>
+<main id="list"></main>
+<footer>
+  <span><kbd>Super</kbd> <kbd>?</kbd> opens this anywhere · <kbd>Space</kbd> <kbd>?</kbd> in gv</span>
+  <span><kbd>↑</kbd> <kbd>↓</kbd> move · <kbd>Enter</kbd> copy · <kbd>Esc</kbd> clear / close</span>
+</footer>
+<div id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>

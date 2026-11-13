@@ -1,0 +1,49 @@
+% {{TITLE}}: notes with contents, theorems and proofs.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\usepackage[colorlinks,allcolors=blue]{hyperref}
+\usepackage{cleveref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\numberwithin{equation}{section}
+
+\title{{{TITLE}}}
+\author{{{AUTHOR}}}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{First topic}
+
+\begin{definition}\label{def:hermitian}
+An operator $A$ is \emph{Hermitian} if $A^\dagger = A$.
+\end{definition}
+
+\begin{theorem}\label{thm:real}
+The eigenvalues of a Hermitian operator are real.
+\end{theorem}
+\begin{proof}
+If $A\lvert\psi\rangle = a\lvert\psi\rangle$, then $a\langle\psi\vert\psi\rangle = \langle\psi\vert A\vert\psi\rangle
+= \langle\psi\vert A^\dagger\vert\psi\rangle = a^*\langle\psi\vert\psi\rangle$, so $a = a^*$.
+\end{proof}
+
+\begin{remark}
+\Cref{thm:real} uses only \cref{def:hermitian}.
+\end{remark}
+
+\section{Second topic}
+
+\end{document}

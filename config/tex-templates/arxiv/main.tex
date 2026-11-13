@@ -1,0 +1,40 @@
+% {{TITLE}}: arXiv preprint. arXiv compiles this as is (upload the .zip from Space l z).
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{authblk}
+\usepackage[colorlinks,allcolors=blue]{hyperref}
+\usepackage{cleveref}
+\graphicspath{{figures/}}
+
+\title{{{TITLE}}}
+\author[1]{{{AUTHOR}}}
+\affil[1]{Theoretical Sciences Unit, Jawaharlal Nehru Centre for Advanced Scientific Research, Bangalore, India}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+One paragraph summary.
+\end{abstract}
+
+\section{Introduction}
+Background and motivation~\cite{hubbard1963}.
+
+\section{Method}
+\begin{equation}
+  H = \sum_{k} \epsilon_k \, c^\dagger_k c_k
+  \label{eq:h}
+\end{equation}
+
+\section{Results}
+
+\section{Conclusion}
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+\end{document}

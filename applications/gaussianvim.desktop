@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=GaussianVim
+GenericName=Code Editor
+Comment=Vim for science: completion, live error checks, Space ? cheat sheet
+Exec=kitty --class GaussianVim --title GaussianVim -e gv %F
+Icon=gaussianvim
+Terminal=false
+Categories=Development;TextEditor;
+Keywords=vim;nvim;gv;editor;code;python;fortran;
+MimeType=text/plain;text/x-python;text/x-csrc;text/x-c++src;text/x-chdr;text/x-shellscript;text/x-fortran;text/markdown;application/json;
+StartupWMClass=GaussianVim

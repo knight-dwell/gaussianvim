@@ -1,0 +1,317 @@
+{
+  "//": {
+    "body": "\\\\frac{$1}{$2}$0",
+    "description": "fraction: \\frac{}{}, cursor in the numerator, Tab to the denominator",
+    "keywords": "fraction divide division over ratio frac"
+  },
+  "td": {
+    "body": "^{$1}$0",
+    "description": "to the power: ^{ }",
+    "keywords": "power exponent superscript raise"
+  },
+  "sr": {
+    "body": "^2",
+    "description": "squared: ^2",
+    "keywords": "square squared power two"
+  },
+  "cb": {
+    "body": "^3",
+    "description": "cubed: ^3",
+    "keywords": "cube cubed power three"
+  },
+  "inv": {
+    "body": "^{-1}",
+    "description": "inverse: ^{-1}",
+    "keywords": "inverse power minus one reciprocal"
+  },
+  "__": {
+    "body": "_{$1}$0",
+    "description": "subscript: _{ }",
+    "keywords": "subscript index lower"
+  },
+  "sq": {
+    "body": "\\\\sqrt{$1}$0",
+    "description": "square root: \\sqrt{}",
+    "keywords": "root square radical sqrt"
+  },
+  "ee": {
+    "body": "e^{$1}$0",
+    "description": "exponential: e^{ }",
+    "keywords": "exponential exp e power"
+  },
+  "dd": {
+    "body": "\\\\mathrm{d}",
+    "description": "the d of dx (upright)",
+    "keywords": "differential d dx integral"
+  },
+  "pd": {
+    "body": "\\\\partial",
+    "description": "partial: \\partial",
+    "keywords": "partial derivative del"
+  },
+  "nb": {
+    "body": "\\\\nabla",
+    "description": "nabla: \\nabla",
+    "keywords": "nabla gradient del"
+  },
+  "hb": {
+    "body": "\\\\hbar",
+    "description": "h-bar: \\hbar",
+    "keywords": "hbar planck reduced quantum"
+  },
+  "oo": {
+    "body": "\\\\infty",
+    "description": "infinity: \\infty",
+    "keywords": "infinity infinite"
+  },
+  "xx": {
+    "body": "\\\\times",
+    "description": "times: \\times",
+    "keywords": "times multiply cross product"
+  },
+  "**": {
+    "body": "\\\\cdot",
+    "description": "dot product / times: \\cdot",
+    "keywords": "dot product multiply cdot"
+  },
+  "->": {
+    "body": "\\\\to",
+    "description": "arrow: \\to",
+    "keywords": "arrow tends to goes to maps"
+  },
+  "=>": {
+    "body": "\\\\implies",
+    "description": "implies: \\implies",
+    "keywords": "implies therefore arrow"
+  },
+  "<=": {
+    "body": "\\\\leq",
+    "description": "less or equal: \\leq",
+    "keywords": "less equal inequality"
+  },
+  ">=": {
+    "body": "\\\\geq",
+    "description": "greater or equal: \\geq",
+    "keywords": "greater equal inequality"
+  },
+  "!=": {
+    "body": "\\\\neq",
+    "description": "not equal: \\neq",
+    "keywords": "not equal unequal"
+  },
+  "~~": {
+    "body": "\\\\approx",
+    "description": "approximately: \\approx",
+    "keywords": "approximately about roughly approx"
+  },
+  "+-": {
+    "body": "\\\\pm",
+    "description": "plus-minus: \\pm",
+    "keywords": "plus minus error uncertainty"
+  },
+  "...": {
+    "body": "\\\\dots",
+    "description": "dots: \\dots",
+    "keywords": "dots ellipsis etc"
+  },
+  "bf": {
+    "body": "\\\\mathbf{$1}$0",
+    "description": "bold: \\mathbf{}",
+    "keywords": "bold vector matrix"
+  },
+  "rm": {
+    "body": "\\\\mathrm{$1}$0",
+    "description": "upright text: \\mathrm{}",
+    "keywords": "upright roman text units"
+  },
+  "lr(": {
+    "body": "\\\\left( $1 \\\\right)$0",
+    "description": "brackets that grow: \\left( \\right)",
+    "keywords": "brackets parentheses big tall left right"
+  },
+  "lr[": {
+    "body": "\\\\left[ $1 \\\\right]$0",
+    "description": "square brackets that grow",
+    "keywords": "brackets square big tall"
+  },
+  "lr|": {
+    "body": "\\\\left| $1 \\\\right|$0",
+    "description": "bars that grow (absolute value)",
+    "keywords": "absolute value bars modulus"
+  },
+  ";a": {
+    "body": "\\\\alpha",
+    "description": "Greek alpha: \\alpha",
+    "keywords": "greek letter alpha"
+  },
+  ";b": {
+    "body": "\\\\beta",
+    "description": "Greek beta: \\beta",
+    "keywords": "greek letter beta"
+  },
+  ";g": {
+    "body": "\\\\gamma",
+    "description": "Greek gamma: \\gamma",
+    "keywords": "greek letter gamma"
+  },
+  ";G": {
+    "body": "\\\\Gamma",
+    "description": "Greek Gamma: \\Gamma",
+    "keywords": "greek letter Gamma"
+  },
+  ";d": {
+    "body": "\\\\delta",
+    "description": "Greek delta: \\delta",
+    "keywords": "greek letter delta"
+  },
+  ";D": {
+    "body": "\\\\Delta",
+    "description": "Greek Delta: \\Delta",
+    "keywords": "greek letter Delta"
+  },
+  ";e": {
+    "body": "\\\\epsilon",
+    "description": "Greek epsilon: \\epsilon",
+    "keywords": "greek letter epsilon"
+  },
+  ";ve": {
+    "body": "\\\\varepsilon",
+    "description": "Greek varepsilon: \\varepsilon",
+    "keywords": "greek letter varepsilon"
+  },
+  ";z": {
+    "body": "\\\\zeta",
+    "description": "Greek zeta: \\zeta",
+    "keywords": "greek letter zeta"
+  },
+  ";h": {
+    "body": "\\\\eta",
+    "description": "Greek eta: \\eta",
+    "keywords": "greek letter eta"
+  },
+  ";q": {
+    "body": "\\\\theta",
+    "description": "Greek theta: \\theta",
+    "keywords": "greek letter theta"
+  },
+  ";Q": {
+    "body": "\\\\Theta",
+    "description": "Greek Theta: \\Theta",
+    "keywords": "greek letter Theta"
+  },
+  ";i": {
+    "body": "\\\\iota",
+    "description": "Greek iota: \\iota",
+    "keywords": "greek letter iota"
+  },
+  ";k": {
+    "body": "\\\\kappa",
+    "description": "Greek kappa: \\kappa",
+    "keywords": "greek letter kappa"
+  },
+  ";l": {
+    "body": "\\\\lambda",
+    "description": "Greek lambda: \\lambda",
+    "keywords": "greek letter lambda"
+  },
+  ";L": {
+    "body": "\\\\Lambda",
+    "description": "Greek Lambda: \\Lambda",
+    "keywords": "greek letter Lambda"
+  },
+  ";m": {
+    "body": "\\\\mu",
+    "description": "Greek mu: \\mu",
+    "keywords": "greek letter mu"
+  },
+  ";n": {
+    "body": "\\\\nu",
+    "description": "Greek nu: \\nu",
+    "keywords": "greek letter nu"
+  },
+  ";x": {
+    "body": "\\\\xi",
+    "description": "Greek xi: \\xi",
+    "keywords": "greek letter xi"
+  },
+  ";X": {
+    "body": "\\\\Xi",
+    "description": "Greek Xi: \\Xi",
+    "keywords": "greek letter Xi"
+  },
+  ";p": {
+    "body": "\\\\pi",
+    "description": "Greek pi: \\pi",
+    "keywords": "greek letter pi"
+  },
+  ";P": {
+    "body": "\\\\Pi",
+    "description": "Greek Pi: \\Pi",
+    "keywords": "greek letter Pi"
+  },
+  ";r": {
+    "body": "\\\\rho",
+    "description": "Greek rho: \\rho",
+    "keywords": "greek letter rho"
+  },
+  ";s": {
+    "body": "\\\\sigma",
+    "description": "Greek sigma: \\sigma",
+    "keywords": "greek letter sigma"
+  },
+  ";S": {
+    "body": "\\\\Sigma",
+    "description": "Greek Sigma: \\Sigma",
+    "keywords": "greek letter Sigma"
+  },
+  ";t": {
+    "body": "\\\\tau",
+    "description": "Greek tau: \\tau",
+    "keywords": "greek letter tau"
+  },
+  ";u": {
+    "body": "\\\\upsilon",
+    "description": "Greek upsilon: \\upsilon",
+    "keywords": "greek letter upsilon"
+  },
+  ";f": {
+    "body": "\\\\phi",
+    "description": "Greek phi: \\phi",
+    "keywords": "greek letter phi"
+  },
+  ";vf": {
+    "body": "\\\\varphi",
+    "description": "Greek varphi: \\varphi",
+    "keywords": "greek letter varphi"
+  },
+  ";F": {
+    "body": "\\\\Phi",
+    "description": "Greek Phi: \\Phi",
+    "keywords": "greek letter Phi"
+  },
+  ";c": {
+    "body": "\\\\chi",
+    "description": "Greek chi: \\chi",
+    "keywords": "greek letter chi"
+  },
+  ";y": {
+    "body": "\\\\psi",
+    "description": "Greek psi: \\psi",
+    "keywords": "greek letter psi"
+  },
+  ";Y": {
+    "body": "\\\\Psi",
+    "description": "Greek Psi: \\Psi",
+    "keywords": "greek letter Psi"
+  },
+  ";w": {
+    "body": "\\\\omega",
+    "description": "Greek omega: \\omega",
+    "keywords": "greek letter omega"
+  },
+  ";W": {
+    "body": "\\\\Omega",
+    "description": "Greek Omega: \\Omega",
+    "keywords": "greek letter Omega"
+  }
+}

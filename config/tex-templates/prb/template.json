@@ -1,0 +1,6 @@
+{
+  "name": "Physical Review B paper (REVTeX 4.2)",
+  "description": "revtex4-2, aps/prb two-column reprint style: title, authors with affiliations, abstract, sections, acknowledgments, appendix, APS references",
+  "main": "main.tex",
+  "order": 2
+}

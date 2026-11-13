@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# gtex: GaussianTeX, LaTeX projects in GaussianVim (like Overleaf's project list).
+#   gtex              the project menu: new from a template, open, import .zip, rename
+#   gtex new          straight to "choose a template"
+#   gtex <folder>     open that project's main .tex
+#   gtex <file.tex>   open that file
+# Projects live in ~/GaussianTeX. Inside gv the same menu is Space t.
+GV="$HOME/.local/bin/gv"
+lua() { exec "$GV" -c "lua vim.defer_fn(function() $1 end, 80)"; }
+case "${1:-}" in
+  "")  lua 'require("gv.texproject").start()' ;;
+  new) lua 'require("gv.texproject").new()' ;;
+  *)   if [[ -d $1 ]]; then dir=$(realpath "$1"); lua "require('gv.texproject').open_dir([[$dir]])"
+       else exec "$GV" "$@"; fi ;;
+esac

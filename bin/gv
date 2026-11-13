@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# gv: GaussianVim. Takes the same arguments as vim / nvim:
+#   gv                 start screen
+#   gv file.py         open a file (gv +42 file.py: at line 42)
+#   gv .               file tree of this folder
+# Runs Neovim 0.12 from ~/.local/share/gaussianvim with the config in
+# ~/.config/gaussianvim (NVIM_APPNAME keeps it apart from `vim` = LunarVim and `nvim`).
+G="$HOME/.local/share/gaussianvim"
+
+# Some language servers (Bash, ...) run on Node. Started from rofi, PATH has no
+# nvm, so add the newest nvm Node when `node` isn't found.
+if ! command -v node >/dev/null 2>&1; then
+  n=$(ls -d "$HOME"/.nvm/versions/node/*/bin 2>/dev/null | sort -V | tail -1)
+  [[ -n $n ]] && PATH="$n:$PATH"
+fi
+
+NVIM_APPNAME=gaussianvim exec "$G/nvim/bin/nvim" "$@"

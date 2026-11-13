@@ -1,0 +1,6 @@
+{
+  "name": "arXiv preprint (article, one column)",
+  "description": "article 11pt, 1-inch margins, authblk authors/affiliations, abstract, natbib numbered references, hyperref: compiles on arXiv as is",
+  "main": "main.tex",
+  "order": 3
+}

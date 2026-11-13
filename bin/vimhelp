@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# vimhelp: look up a Vim command in plain English (the GaussianVim cheat sheet).
+#   vimhelp                browse everything; type to filter (fzf), Esc to quit
+#   vimhelp delete         every entry mentioning "delete"
+#   vimhelp replace file   entries mentioning both words
+# The list lives in ~/.config/gaussianvim/cheatsheet.tsv; add your own lines there.
+F="$HOME/.config/gaussianvim/cheatsheet.tsv"
+[[ -r $F ]] || { echo "vimhelp: $F not found" >&2; exit 1; }
+
+# category (dim)  keys (yellow)  description; one aligned line per entry
+pretty() {
+  awk -F'\t' -v c="${COLOR:-1}" '
+    /^#/ || NF < 3 { next }
+    { if (c) printf "\033[2m%-9s\033[0m \033[1;33m%-28s\033[0m %s\n", $1, $2, $3
+      else   printf "%-9s %-28s %s\n", $1, $2, $3 }'
+}
+
+if [[ $# -eq 0 ]]; then
+  if [[ -t 1 ]] && command -v fzf >/dev/null; then
+    pretty <"$F" | fzf --ansi --reverse --no-sort --prompt "vim › " \
+      --header "type what you want to do (e.g. delete line, replace, split)" >/dev/null
+  else
+    [[ -t 1 ]] || COLOR=0
+    pretty <"$F"
+  fi
+  exit 0
+fi
+
+[[ -t 1 ]] || COLOR=0
+out=$(grep -v '^#' "$F" | {
+  m=$(cat)
+  for w in "$@"; do m=$(grep -iF -- "$w" <<<"$m"); done   # every word must match
+  printf '%s' "$m"
+} | pretty)
+if [[ -n $out ]]; then
+  printf '%s\n' "$out"
+else
+  echo "nothing for \"$*\". Try fewer words, or just: vimhelp"
+fi

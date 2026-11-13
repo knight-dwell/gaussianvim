@@ -1,0 +1,36 @@
+% {{TITLE}}: Nature-style letter (nature.cls, naturemag references).
+% Nature now takes a plain article for first submission; this keeps their look.
+\documentclass{nature}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\bibliographystyle{naturemag}
+
+\title{{{TITLE}}}
+\author{{{AUTHOR}}$^{1}$}
+
+\begin{document}
+\maketitle
+
+\begin{affiliations}
+ \item Theoretical Sciences Unit, Jawaharlal Nehru Centre for Advanced Scientific Research, Bangalore 560064, India
+\end{affiliations}
+
+\begin{abstract}
+The summary paragraph: about 150 words, for a general reader.
+\end{abstract}
+
+The main text starts here, without section headings in a Letter~\cite{hubbard1963}. Explain the
+problem, the key result and why it matters.
+
+\section*{Methods}
+How it was done, in detail.
+
+\bibliography{references}
+
+\begin{addendum}
+ \item[Acknowledgements] We thank ...
+ \item[Author contributions] ...
+ \item[Competing interests] The authors declare no competing interests.
+ \item[Correspondence] Correspondence should be addressed to {{AUTHOR}}.
+\end{addendum}
+\end{document}

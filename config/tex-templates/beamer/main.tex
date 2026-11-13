@@ -1,0 +1,44 @@
+% {{TITLE}}: slides (beamer). Each \begin{frame} ... \end{frame} is one slide.
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+
+\title{{{TITLE}}}
+\author{{{AUTHOR}}}
+\institute{JNCASR, Bangalore}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\section{Motivation}
+\begin{frame}{Motivation}
+  \begin{itemize}
+    \item First point
+    \item Second point
+  \end{itemize}
+\end{frame}
+
+\section{Model}
+\begin{frame}{The model}
+  \begin{equation}
+    H = -t \sum_{\langle i,j \rangle} c^\dagger_i c_j + U \sum_i n_{i\uparrow} n_{i\downarrow}
+  \end{equation}
+\end{frame}
+
+\begin{frame}{Two columns}
+  \begin{columns}
+    \column{0.5\textwidth} Text on the left.
+    \column{0.5\textwidth} A figure on the right.
+  \end{columns}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# GaussianVim Dictionary: every gv / GaussianTeX key and LaTeX alias, searchable.
+#   gv-dict            open it (Super+? anywhere, Space ? in gv)
+#   gv-dict fraction   open it with a search typed in
+exec python3 "$HOME/.local/share/gaussianvim/dictionary/app.py" "$@"

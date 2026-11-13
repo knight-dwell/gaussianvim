@@ -1,0 +1,116 @@
+/* GaussianVim Dictionary. Colours come from the rice theme (app.js sets them). */
+:root {
+  --primary: #adc6ff; --on_primary: #102f60;
+  --primary_container: #2b4678; --on_primary_container: #d8e2ff;
+  --secondary: #bfc6dc; --secondary_container: #3f4759; --on_secondary_container: #dbe2f9;
+  --tertiary: #debcdf; --tertiary_container: #583e5b; --on_tertiary_container: #fbd7fc;
+  --surface: #111318; --surface_container_low: #191c20; --surface_container: #1e1f25;
+  --surface_container_high: #282a2f; --surface_container_highest: #33353a;
+  --on_surface: #e2e2e9; --on_surface_variant: #c4c6d0;
+  --outline: #8e9099; --outline_variant: #44474f; --error: #ffb4ab;
+  --mono: "JetBrainsMono Nerd Font", "JetBrains Mono", "Fira Code", monospace;
+  --sans: "Inter", "Noto Sans", "Cantarell", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--surface); color: var(--on_surface); font: 14px/1.45 var(--sans);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+header { padding: 18px 24px 8px; background: var(--surface); }
+.top { display: flex; align-items: center; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand img { width: 40px; height: 40px; }
+h1 { font-size: 20px; margin: 0; font-weight: 650; letter-spacing: .2px; }
+.brand p { margin: 2px 0 0; color: var(--on_surface_variant); font-size: 13px; }
+.count { color: var(--outline); font-size: 12.5px; }
+
+.search {
+  margin-top: 14px; display: flex; align-items: center; gap: 10px;
+  background: var(--surface_container_high); border-radius: 28px; padding: 0 8px 0 18px; height: 52px;
+  border: 1px solid transparent; transition: border-color .15s, background .15s;
+}
+.search:focus-within { border-color: var(--primary); background: var(--surface_container_highest); }
+.search svg { width: 22px; height: 22px; fill: var(--on_surface_variant); flex: none; }
+.search input {
+  flex: 1; background: none; border: 0; outline: 0; color: var(--on_surface); font: 16px var(--sans);
+}
+.search input::placeholder { color: var(--outline); }
+#clear {
+  width: 36px; height: 36px; border-radius: 50%; border: 0; background: none; color: var(--on_surface_variant);
+  font-size: 22px; cursor: pointer; visibility: hidden;
+}
+#clear:hover { background: var(--surface_container_highest); }
+
+nav { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+#cats { margin-top: 8px; }
+.chip {
+  border: 1px solid var(--outline_variant); background: none; color: var(--on_surface_variant);
+  border-radius: 8px; padding: 5px 12px; font: 13px var(--sans); cursor: pointer; white-space: nowrap;
+}
+.chip:hover { background: var(--surface_container_high); }
+.chip.on { background: var(--secondary_container); color: var(--on_secondary_container); border-color: transparent; }
+.chip.big { border-radius: 18px; padding: 6px 16px; font-weight: 600; }
+.chip.big.on { background: var(--primary_container); color: var(--on_primary_container); }
+.chip .n { opacity: .65; margin-left: 6px; font-weight: 400; }
+
+main { flex: 1; overflow-y: auto; padding: 6px 24px 24px; scroll-behavior: smooth; }
+main::-webkit-scrollbar { width: 10px; }
+main::-webkit-scrollbar-thumb { background: var(--surface_container_highest); border-radius: 5px; }
+h2 {
+  font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--primary);
+  margin: 22px 0 10px; font-weight: 650; display: flex; gap: 10px; align-items: center;
+}
+h2 .g { color: var(--outline); font-weight: 500; text-transform: none; letter-spacing: 0; }
+
+.howto {
+  background: var(--tertiary_container); color: var(--on_tertiary_container); border-radius: 16px;
+  padding: 12px 16px; margin: 4px 0 6px; font-size: 13.5px;
+}
+.howto b { font-weight: 650; }
+
+.card {
+  display: grid; grid-template-columns: minmax(170px, 260px) 1fr auto; gap: 18px; align-items: center;
+  background: var(--surface_container); border-radius: 16px; padding: 12px 16px; margin-bottom: 8px;
+  cursor: pointer; border: 1px solid transparent; transition: background .12s, border-color .12s;
+}
+.card:hover { background: var(--surface_container_high); }
+.card.sel { border-color: var(--primary); background: var(--surface_container_high); }
+.keys { font: 600 14px var(--mono); color: var(--on_surface); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.k {
+  background: var(--surface_container_highest); border: 1px solid var(--outline_variant); border-bottom-width: 2px;
+  border-radius: 7px; padding: 2px 8px; white-space: pre;
+}
+.alias .k { background: var(--primary_container); color: var(--on_primary_container); border-color: transparent; }
+.or { color: var(--outline); font: 12px var(--sans); }
+.body .title { font-weight: 650; margin-bottom: 1px; }
+.body .desc { color: var(--on_surface_variant); }
+.body pre {
+  margin: 8px 0 0; padding: 8px 10px; background: var(--surface_container_low); border-radius: 10px;
+  font: 12.5px/1.45 var(--mono); color: var(--on_surface); white-space: pre-wrap; overflow-x: auto;
+}
+.math { font-size: 17px; color: var(--on_surface); padding-left: 8px; min-width: 60px; text-align: center; }
+.math .katex { color: var(--on_surface); }
+.tag {
+  display: inline-block; margin-top: 6px; font-size: 11.5px; color: var(--on_surface_variant);
+  background: var(--surface_container_highest); border-radius: 6px; padding: 1px 8px;
+}
+mark { background: none; color: var(--primary); font-weight: 650; }
+.empty { text-align: center; color: var(--on_surface_variant); margin-top: 60px; font-size: 15px; }
+.empty b { color: var(--primary); }
+
+footer {
+  display: flex; justify-content: space-between; padding: 8px 24px; font-size: 12px; color: var(--outline);
+  border-top: 1px solid var(--outline_variant); background: var(--surface);
+}
+kbd {
+  font: 11.5px var(--mono); background: var(--surface_container_high); border: 1px solid var(--outline_variant);
+  border-radius: 5px; padding: 0 5px; color: var(--on_surface_variant);
+}
+#toast {
+  position: fixed; left: 50%; bottom: 56px; transform: translateX(-50%) translateY(20px); opacity: 0;
+  background: var(--primary); color: var(--on_primary); padding: 10px 18px; border-radius: 12px;
+  font-weight: 600; transition: opacity .18s, transform .18s; pointer-events: none; max-width: 80%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }

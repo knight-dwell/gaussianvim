@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=GaussianVim Dictionary
+GenericName=Keys and LaTeX aliases
+Comment=Search every GaussianVim / GaussianTeX shortcut, command and LaTeX alias by what you want to do
+Exec=@HOME@/.local/bin/gv-dict
+Icon=@HOME@/.local/share/gaussianvim/brand/gaussianvim.svg
+Terminal=false
+Categories=Development;Utility;
+Keywords=vim;latex;shortcut;help;alias;cheatsheet;keys;gaussianvim;gaussiantex;
+StartupWMClass=GvDictionary

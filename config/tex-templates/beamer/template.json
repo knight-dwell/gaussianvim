@@ -1,0 +1,6 @@
+{
+  "name": "Talk slides (Beamer, 16:9)",
+  "description": "beamer 16:9 with the Madrid theme: title slide, outline, sections, an equation slide, a two-column slide",
+  "main": "main.tex",
+  "order": 7
+}
