@@ -30,22 +30,67 @@ end
 
 local function enc(s) return (s:gsub("[^%w%-_%.~ ]", function(c) return ("%%%02X"):format(c:byte()) end):gsub(" ", "+")) end
 local function unhtml(s) return (s or ""):gsub("&quot;", '"'):gsub("&#39;", "'"):gsub("&lt;", "<"):gsub("&gt;", ">"):gsub("&amp;", "&") end
-local function md(html)
-  if vim.fn.executable("pandoc") == 1 then
-    local r = vim.system({ "pandoc", "-f", "html", "-t", "gfm-raw_html", "--wrap=none" }, { stdin = html or "", text = true }):wait()
-    if r.code == 0 then return vim.split(r.stdout, "\n") end
+-- sites whose posts write maths as $...$ (MathJax): it is typeset in the reader
+local MATH_SITES = { physics = true, math = true, mathoverflow = true }
+
+-- keep $...$ / $$...$$ exactly as written (outside <pre>/<code>): swap them for
+-- placeholders before pandoc and put them back after
+local function protect_math(html)
+  local store, out, pos = {}, {}, 1
+  local function put(f, display)
+    f = unhtml(f):gsub("%s+", " ")
+    store[#store + 1] = { f = vim.trim(f), d = display }
+    return ("GVMATH%s%dX"):format(display and "D" or "I", #store)
   end
-  return vim.split(unhtml((html or ""):gsub("<[^>]+>", "")), "\n")
+  local function math_in(chunk)
+    chunk = chunk:gsub("%$%$(.-)%$%$", function(f) return put(f, true) end)
+    chunk = chunk:gsub("\\%[(.-)\\%]", function(f) return put(f, true) end)
+    return (chunk:gsub("%$([^%$]-)%$", function(f)
+      if f:match("^%s*$") then return nil end
+      return put(f, false)
+    end))
+  end
+  while pos <= #html do
+    local s, e = html:find("<pre.-</pre>", pos)
+    local cs, ce = html:find("<code.-</code>", pos)
+    if cs and (not s or cs < s) then s, e = cs, ce end
+    if not s then out[#out + 1] = math_in(html:sub(pos)); break end
+    out[#out + 1] = math_in(html:sub(pos, s - 1))
+    out[#out + 1] = html:sub(s, e)
+    pos = e + 1
+  end
+  return table.concat(out), store
+end
+
+local function md(html, with_math)
+  html = html or ""
+  local store
+  if with_math then html, store = protect_math(html) end
+  local text
+  if vim.fn.executable("pandoc") == 1 then
+    local r = vim.system({ "pandoc", "-f", "html", "-t", "gfm-raw_html", "--wrap=none" }, { stdin = html, text = true }):wait()
+    if r.code == 0 then text = r.stdout end
+  end
+  text = text or unhtml(html:gsub("<[^>]+>", ""))
+  if store then
+    text = text:gsub("GVMATH([DI])(%d+)X", function(kind, n)
+      local m = store[tonumber(n)]
+      if not m then return "" end
+      return kind == "D" and ("\n\n$$" .. m.f .. "$$\n\n") or ("$" .. m.f .. "$")
+    end)
+  end
+  return vim.split(text, "\n")
 end
 
 -- the question and its top answers in a reading window
 local function open_question(site, q)
   get(("%s/questions/%d/answers?order=desc&sort=votes&site=%s&filter=withbody&pagesize=4"):format(API, q.question_id, site), function(data)
+    local has_math = MATH_SITES[site]
     local lines = { "# " .. unhtml(q.title), "", ("score %d · %d answers · %s"):format(q.score, q.answer_count, q.link), "" }
-    vim.list_extend(lines, md(q.body))
+    vim.list_extend(lines, md(q.body, has_math))
     for _, a in ipairs(data.items or {}) do
       vim.list_extend(lines, { "", "---", "", ("## Answer · score %d%s"):format(a.score, a.is_accepted and " · ✓ accepted" or ""), "" })
-      vim.list_extend(lines, md(a.body))
+      vim.list_extend(lines, md(a.body, has_math))
     end
     local buf = vim.api.nvim_create_buf(false, true)
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
@@ -54,10 +99,15 @@ local function open_question(site, q)
     local win = vim.api.nvim_open_win(buf, true, {
       relative = "editor", row = 2, col = math.floor((vim.o.columns - w) / 2), width = w, height = vim.o.lines - 6,
       border = "rounded", style = "minimal", title = { { " " .. site .. " ", "FloatTitle" } },
-      footer = { { " q close · o open in browser ", "FloatFooter" } }, footer_pos = "right",
+      footer = { { " q back to the results · Q close · o open in browser ", "FloatFooter" } }, footer_pos = "right",
     })
     vim.wo[win].wrap, vim.wo[win].linebreak, vim.wo[win].conceallevel = true, true, 2
-    for _, k in ipairs({ "q", "<Esc>" }) do vim.keymap.set("n", k, "<cmd>close<cr>", { buffer = buf, nowait = true }) end
+    -- q / Backspace: back to the list of results, where you were; Q / Esc: close
+    for _, k in ipairs({ "q", "<BS>" }) do
+      vim.keymap.set("n", k, function() vim.cmd.close(); Snacks.picker.resume() end, { buffer = buf, nowait = true })
+    end
+    for _, k in ipairs({ "Q", "<Esc>" }) do vim.keymap.set("n", k, "<cmd>close<cr>", { buffer = buf, nowait = true }) end
+    if has_math then require("gv.mathrender").render(buf) end
     vim.keymap.set("n", "o", function() vim.ui.open(q.link) end, { buffer = buf, nowait = true })
   end)
 end

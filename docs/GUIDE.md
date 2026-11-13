@@ -102,7 +102,14 @@ lined up.
 
 `Space s d` searches NumPy, SciPy, Matplotlib, Python, pandas, LaTeX, Fortran and
 Bash documentation, offline. Type `linspace`, `quad`, `savefig`, `fft`; the
-right side previews the page; Enter opens it (`q` closes). `Space s D` looks up
+right side previews the page; Enter opens it.
+
+- **Enter on a module** (`scipy.integrate`, `numpy.linalg`, `matplotlib.pyplot`)
+  opens it as a **tree**: its sub-modules (folders) and functions with one-line
+  summaries. Enter goes in, `..` goes up, the first line reads the module page.
+- Pages are formatted: the signature in a code block, Parameters / Returns /
+  Examples sections, examples as Python code, maths typeset.
+- In a page `q` goes back to the list where you were, `Q` closes. `Space s D` looks up
 the word under the cursor. `:GvDocs install julia sympy` adds more sets
 (names from devdocs.io); SciPy comes from your installed SciPy (like `help()`).
 
@@ -110,8 +117,9 @@ the word under the cursor. `:GvDocs install julia sympy` adds more sets
 
 `Space s x`: pick a site (Stack Overflow, TeX, Physics, Mathematics, Unix, Ask
 Ubuntu), the search box starts with the error on your line (or your selection).
-Enter reads the question with its best answers inside gv; `o` opens it in the
-browser.
+Enter reads the question with its best answers inside gv, with the maths
+typeset (Physics and Mathematics); `q` goes back to the results, `Q` closes,
+`o` opens it in the browser.
 
 ### Claude
 

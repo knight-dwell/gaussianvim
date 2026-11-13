@@ -201,10 +201,10 @@ misc	Space S s	restore the files you had open here last time
 misc	Space P	switch project
 misc	Space ;	dashboard
 misc	Space ?  or  Super+?	this dictionary: every gv / GaussianTeX key and LaTeX alias, searchable by what you want to do (also in the app menu)	help cheatsheet dictionary shortcuts keys find
-docs	Space s d	search the offline docs: NumPy, SciPy, Matplotlib, Python, pandas, LaTeX, Fortran, Bash (Enter opens the page)	documentation help manual reference numpy scipy matplotlib python api function
+docs	Space s d	search the offline docs: NumPy, SciPy, Matplotlib, Python, pandas, LaTeX, Fortran, Bash. Enter on a module (scipy.integrate, numpy.linalg) opens its tree of functions (.. goes up); Enter on a function opens its page; q goes back to the list	documentation help manual reference numpy scipy matplotlib python api function
 docs	Space s D	docs for the word under the cursor (e.g. on linspace)	documentation help word lookup
 docs	:GvDocs install julia sympy	download more doc sets (names from devdocs.io); :GvDocs list shows what you have	documentation download add
-docs	Space s x	search Stack Exchange: Stack Overflow, TeX, Physics, Math, Unix, Ask Ubuntu (starts with the error on this line); Enter reads the answers, o opens the browser	stackoverflow stack exchange internet question answer forum google
+docs	Space s x	search Stack Exchange: Stack Overflow, TeX, Physics, Math, Unix, Ask Ubuntu (starts with the error on this line); Enter reads the question and answers (maths typeset), q back to the results, o opens the browser	stackoverflow stack exchange internet question answer forum google
 ai	Space a a	Claude panel on the right (Claude Code in your project); Ctrl+q hides it	claude ai assistant chat help
 ai	Space a e	Claude: explain and fix the error on this line	claude debug error fix bug
 ai	Space a s (visual)	send the selection to Claude, then type your question	claude ask selection code
