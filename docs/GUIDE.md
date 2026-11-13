@@ -117,7 +117,8 @@ the word under the cursor. `:GvDocs install julia sympy` adds more sets
 
 `Space s x`: pick a site (Stack Overflow, TeX, Physics, Mathematics, Unix, Ask
 Ubuntu), the search box starts with the error on your line (or your selection).
-Enter reads the question with its best answers inside gv, with the maths
+Up to 100 results show at once; the last line, **Load more results…**, fetches
+the next 100. Enter reads the question with its best answers inside gv, with the maths
 typeset (Physics and Mathematics); `q` goes back to the results, `Q` closes,
 `o` opens it in the browser.
 

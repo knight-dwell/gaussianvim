@@ -112,31 +112,41 @@ local function open_question(site, q)
   end)
 end
 
-function M.query(site, text)
-  local url = ("%s/search/advanced?order=desc&sort=relevance&q=%s&site=%s&filter=withbody&pagesize=25"):format(API, enc(text), site)
-  notify("Searching " .. site .. "…")
+-- up to 100 results per page (the API's maximum; one request either way);
+-- "Load more results" at the end fetches the next 100
+function M.query(site, text, page, prev)
+  page = page or 1
+  local url = ("%s/search/advanced?order=desc&sort=relevance&q=%s&site=%s&filter=withbody&pagesize=100&page=%d")
+    :format(API, enc(text), site, page)
+  notify(page == 1 and ("Searching " .. site .. "…") or ("Loading more results (page " .. page .. ")…"))
   get(url, function(data)
-    local items = {}
+    local items = prev or {}
+    if items[#items] and items[#items].more then table.remove(items) end
     for _, q in ipairs(data.items or {}) do
       items[#items + 1] = { text = unhtml(q.title), q = q }
     end
     if #items == 0 then return notify("Nothing found for: " .. text) end
+    if data.has_more then items[#items + 1] = { text = "Load more results", more = page + 1 } end
     Snacks.picker.pick({
-      title = site .. ": " .. text, items = items,
+      title = ("%s: %s  (%d)"):format(site, text, #items - (data.has_more and 1 or 0)), items = items,
       format = function(item)
+        if item.more then return { { "  \u{f0415} ", "Special" }, { "Load more results…", "Special" } } end
         local q = item.q
         return { { ("%4d "):format(q.score), q.is_answered and "DiagnosticOk" or "Comment" }, { item.text },
           { ("  %d answers"):format(q.answer_count), "Comment" } }
       end,
       preview = function(ctx)
-        ctx.preview:set_lines(md(ctx.item.q.body))
+        if ctx.item.more then return ctx.preview:set_lines({ "", "  Enter: the next 100 results" }) end
+        ctx.preview:set_lines(md(ctx.item.q.body, MATH_SITES[site]))
         ctx.preview:highlight({ ft = "markdown" })
       end,
-      actions = { open_browser = function(_, item) if item then vim.ui.open(item.q.link) end end },
+      actions = { open_browser = function(_, item) if item and item.q then vim.ui.open(item.q.link) end end },
       win = { input = { keys = { ["<C-o>"] = { "open_browser", mode = { "i", "n" } } } } },
       confirm = function(picker, item)
         picker:close()
-        if item then open_question(site, item.q) end
+        if not item then return end
+        if item.more then return M.query(site, text, item.more, items) end
+        open_question(site, item.q)
       end,
     })
   end)
