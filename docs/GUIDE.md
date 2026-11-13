@@ -309,6 +309,18 @@ Dictionary by themselves.
 | `Shift+F5` | stop compiling on save |
 | `Space a l` | Claude fixes the compile errors |
 
+**Faster compiles** (measured on a 116-page thesis: 15 s → 3.4 s per save, ~1–3 s in fast mode):
+
+- Big pictures (50-megapixel PNGs) are what makes LaTeX slow. GaussianTeX keeps
+  print-resolution copies (4000 px ≈ 600 dpi on A4) in a hidden `.gvfast/`
+  folder and LaTeX uses them; your figure files are never changed.
+  **`Space l Q`** makes a full-quality PDF from the originals (for the final version).
+- **⚡ Fast** (button, or `Space l F`) in a chapter file: only that chapter (and the
+  front matter) is typeset; page numbers and references to other chapters stay.
+  Press again for the whole document.
+- "⚠ Compiled with warnings" means the PDF is there but e.g. BibTeX complained
+  (duplicate entries): click it for the list.
+
 ## 9. Installing on another computer (Ubuntu)
 
 The repo is **private** (github.com/knight-dwell/gaussianvim). On the lab

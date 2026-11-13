@@ -106,6 +106,13 @@ return {
           -- result: ✓ Compiled / ✗ 2 errors, click for the list) and PDF
           lualine_x = {
             {
+              function() local f = require("gv.tex").fast; return f and (" \u{f0e7} Fast: " .. f .. " ") or " \u{f0e7} " end,
+              cond = is_tex, padding = 0,
+              color = function() return require("gv.tex").fast and "GvRunBusy" or "GvBadge" end,
+              on_click = function() require("gv.tex").toggle_fast() end,
+            },
+            { function() return " " end, cond = is_tex, padding = 0 },
+            {
               function() return " \u{f024b} Files " end,
               cond = is_tex, padding = 0, color = "GvBadge",
               on_click = function() require("gv.tex").files() end,

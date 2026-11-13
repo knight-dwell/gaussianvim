@@ -213,3 +213,5 @@ ai	Space a r  or  a (in the run card)	Claude finds why the last run (F5) failed	
 ai	Space a l	(.tex) Claude fixes the LaTeX compile errors	claude latex compile error
 ai	Space a w	(.tex) Claude checks the paragraph: wording, grammar, physics logic	claude paragraph physics check grammar
 misc	:GvGuide	the guide to GaussianVim and GaussianTeX (with alias examples)	guide manual documentation help tutorial readme
+latex	Space l F  or  the ⚡ button	fast mode: typeset only the chapter you are writing (front matter included); much faster saves. Again for the whole document	fast speed quick compile chapter includeonly slow
+latex	Space l Q	full-quality PDF from your original figures (everyday compiles use print-resolution copies in .gvfast, your files untouched)	final quality print figures images resolution submit

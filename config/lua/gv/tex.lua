@@ -25,6 +25,7 @@
 local M = {}
 
 local function notify(msg) vim.notify(msg, vim.log.levels.INFO, { title = "GaussianTeX" }) end
+local function read(p) local f = io.open(p, "r"); if not f then return nil end local t = f:read("*a"); f:close(); return t end
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "tex", "plaintex" },
@@ -232,8 +233,90 @@ local function is_running()
   return vim.b.vimtex ~= nil and vim.fn.eval("b:vimtex.compiler.is_running()") == 1
 end
 
+-- Faster compiles ----------------------------------------------------------------
+-- 1. Figure cache: most of a compile goes into re-encoding huge PNGs. Copies at
+--    print resolution (4000 px ≈ 600 dpi on A4) go to <project>/.gvfast and LaTeX
+--    finds them first (TEXINPUTS); your files are never changed. Space l Q makes
+--    a full-quality PDF from the originals.
+-- 2. Fast mode (⚡ button, Space l F): only the chapter you are writing is
+--    typeset (\includeonly, set from outside the file; the front matter too);
+--    page numbers and references to the other chapters stay from the last full run.
+local ORIG_TEXINPUTS = vim.env.TEXINPUTS
+vim.env.TEXINPUTS = ".gvfast:" .. (ORIG_TEXINPUTS or "")
+
+local function project_root_dir()
+  local ok, r = pcall(vim.fn.eval, "b:vimtex.root")
+  return ok and type(r) == "string" and r ~= "" and r or vim.fs.dirname(vim.api.nvim_buf_get_name(0))
+end
+
+-- (re)build the figure cache in the background; cb() when done
+function M.figure_cache(cb)
+  local root = project_root_dir()
+  vim.system({ "python3", vim.fn.stdpath("config") .. "/runner/gvfastfig.py", root }, { text = true }, function(r)
+    if cb then vim.schedule(function() cb(r.stdout or "") end) end
+  end)
+end
+
+M.fast = nil      -- the chapter typeset in fast mode (nil: everything)
+
+local function set_pretex(code)
+  vim.cmd([[let b:vimtex.compiler.options = filter(copy(b:vimtex.compiler.options), 'v:val !~# "usepretex"')]])
+  if code then
+    vim.cmd(("call add(b:vimtex.compiler.options, %s)"):format(vim.fn.string(vim.fn.shellescape("-usepretex=" .. code))))
+  end
+end
+
+local function restart_compile()
+  if vim.b.vimtex == nil then return end
+  if vim.fn.eval("b:vimtex.compiler.is_running()") == 1 then vim.cmd("VimtexStop") end
+  vim.cmd("VimtexCompile")
+end
+
+function M.toggle_fast()
+  if vim.b.vimtex == nil then return notify("Open a .tex file of the project first") end
+  if M.fast then
+    M.fast = nil
+    set_pretex(nil)
+    notify("Fast mode off: the whole document again")
+    return restart_compile()
+  end
+  local ok, main = pcall(vim.fn.eval, "b:vimtex.tex")
+  local root = project_root_dir()
+  local here = vim.api.nvim_buf_get_name(0)
+  if not ok or here == main then
+    return notify("Open the chapter you are writing (its own .tex, \\include'd from the main file), then press again")
+  end
+  local chapter = vim.fs.relpath(root, here):gsub("%.tex$", "")
+  -- the main file's \include's without a \chapter (title page data, acknowledgements, ...) stay in
+  local keep = {}
+  for name in ("\n" .. (read(main) or "")):gmatch("\n[^%%\n]-\\include{([^}]+)}") do
+    local text = read(root .. "/" .. name .. ".tex") or read(root .. "/" .. name) or ""
+    if not text:find("\\chapter") and not name:find("[%s',]") then keep[#keep + 1] = name end
+  end
+  keep[#keep + 1] = chapter
+  M.fast = vim.fs.basename(chapter)
+  set_pretex("\\AddToHook{begindocument/before}{\\includeonly{" .. table.concat(keep, ",") .. "}}")
+  notify("Fast mode: only " .. chapter .. " is typeset (Space l F or ⚡ again for everything)")
+  restart_compile()
+end
+
+function M.full_quality()
+  if vim.b.vimtex == nil then return notify("Open the .tex file first") end
+  if vim.fn.eval("b:vimtex.compiler.is_running()") == 1 then vim.cmd("VimtexStop") end
+  M.fast = nil
+  set_pretex(nil)
+  vim.env.TEXINPUTS = ORIG_TEXINPUTS               -- the original figures for this one build
+  vim.cmd("VimtexCompileSS")
+  vim.env.TEXINPUTS = ".gvfast:" .. (ORIG_TEXINPUTS or "")
+  notify("Full-quality PDF with your original figures: compiling once (F5 starts compile-on-save again)")
+end
+
 function M.compile()
   if vim.b.vimtex == nil then return notify("Open the .tex file first (vimtex isn't active here)") end
+  if not vim.uv.fs_stat(project_root_dir() .. "/.gvfast") and not is_running() then
+    notify("Preparing the figures once (big pictures at print resolution, your files untouched)…")
+    return M.figure_cache(function() M.compile() end)
+  end
   local modified = vim.bo.modified
   if modified then vim.cmd("silent write") end
   if not is_running() then
@@ -274,6 +357,9 @@ end
 -- what the button at the top right says and does
 function M.button()
   if C.state == "compiling" then return " \u{f110} Compiling… ", "GvRunBusy" end
+  if C.state == "failed" and C.errors == 0 then        -- e.g. BibTeX complained, the PDF is there
+    return " \u{f071} Compiled with warnings" .. (C.warnings > 0 and ("  " .. C.warnings) or "") .. " ", "GvRunBusy"
+  end
   if C.state == "failed" then
     return (" \u{f00d} %d error%s "):format(C.errors, C.errors == 1 and "" or "s"), "GvRunFail"
   end
@@ -342,7 +428,9 @@ end)
 on("VimtexEventCompileFailed", function()
   C.state = "failed"
   collect(); refresh_bar()
-  notify(("Compile failed: %d error%s. Click the red button (or Space l e) for the list"):format(C.errors, C.errors == 1 and "" or "s"))
+  if C.errors > 0 then
+    notify(("Compile failed: %d error%s. Click the red button (or Space l e) for the list"):format(C.errors, C.errors == 1 and "" or "s"))
+  end
 end)
 on("VimtexEventCompileStopped", function()
   if C.state == "compiling" then C.state = "idle" end
@@ -351,6 +439,11 @@ end)
 on("VimtexEventView", function() focus_gv({ 400, 1200 }) end)
 on("VimtexEventViewReverse", function() focus_gv({ 0 }) end)
 
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = { "*.tex", "*.png", "*.jpg", "*.jpeg" }, group = grp,
+  callback = function() if vim.b.vimtex then M.figure_cache() end end,
+})
+
 -- keys in .tex files (F5 / Shift+F5 go through the run card's keys: lua/gv/run.lua)
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "tex", "plaintex" },
@@ -358,6 +451,8 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(ev)
     vim.keymap.set("n", "<leader>lv", M.view, { buffer = ev.buf, desc = "PDF: show this spot (zathura)" })
     vim.keymap.set("n", "<leader>lc", M.compile, { buffer = ev.buf, desc = "Compile (then on every save)" })
+    vim.keymap.set("n", "<leader>lF", M.toggle_fast, { buffer = ev.buf, desc = "Fast mode: typeset only this chapter" })
+    vim.keymap.set("n", "<leader>lQ", M.full_quality, { buffer = ev.buf, desc = "Full-quality PDF (original figures)" })
     vim.keymap.set("n", "<leader>e", M.files, { buffer = ev.buf, desc = "Project files (U uploads)" })
     vim.keymap.set("n", "<leader>lz", function() M.export_zip() end, { buffer = ev.buf, desc = "Export the project as .zip (Downloads)" })
     vim.keymap.set("n", "<leader>lp", function() require("gv.rephrase").start(false) end, { buffer = ev.buf, desc = "Rephrase this paragraph (local Qwen)" })
@@ -673,7 +768,7 @@ vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufLeave", "WinLea
 -- Figures that are PDFs stay. An existing zip of that name is kept: the new one gets the time.
 local BUILD_FILES = { "*.aux", "*.log", "*.synctex.gz", "*.synctex", "*.fdb_latexmk", "*.fls", "*.out", "*.toc",
   "*.lof", "*.lot", "*.blg", "*.bcf", "*.run.xml", "*.xdv", "*.dvi", "*.glo", "*.gls", "*.glg", "*.acn", "*.acr",
-  "*.alg", "*.ist", "*.glsdefs", "*.nav", "*.snm", "*.vrb", "*.swp", "*~", ".git/*", "*/.git/*", ".DS_Store" }
+  "*.alg", "*.ist", "*.glsdefs", "*.nav", "*.snm", "*.vrb", "*.swp", "*~", ".git/*", "*/.git/*", ".DS_Store", ".gvfast/*" }
 
 function M.export_zip(outdir)
   local root = project_root()
