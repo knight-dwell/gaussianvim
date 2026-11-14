@@ -22,6 +22,7 @@ def search(path, text, limit=40):
     out, seen = [], set()
 
     def add(p):
+        p = getattr(p, "path", p)            # full-text results are objects, suggestions are paths
         try:
             entry = zim.get_entry_by_path(p)
         except KeyError:
@@ -36,7 +37,7 @@ def search(path, text, limit=40):
     try:
         from libzim.suggestion import SuggestionSearcher
         sug = SuggestionSearcher(zim).suggest(text)
-        for p in sug.getResults(0, limit):
+        for p in sug.get_results(0, limit):
             add(p)
     except Exception:
         pass
@@ -44,7 +45,7 @@ def search(path, text, limit=40):
         try:
             from libzim.search import Query, Searcher
             res = Searcher(zim).search(Query().set_query(text))
-            for p in res.getResults(0, limit - len(out)):
+            for p in res.get_results(0, limit - len(out)):
                 add(p)
         except Exception:
             pass
@@ -92,9 +93,14 @@ def article(path, entry_path):
     html = re.sub(r"<math\b.*?</math>", keep, html, flags=re.S)
     html = re.sub(r'<img[^>]*class="[^"]*mwe-math-fallback[^"]*"[^>]*>', keep, html)
     html = re.sub(r"<img[^>]*>", "", html)
+    # a <dd> holding only maths is a displayed equation (Wikipedia indents them that way)
+    for m in re.finditer(r"<dd[^>]*>\s*GVMATH(\d+)X\s*([.,;:]?)\s*</dd>", html):
+        n = int(m.group(1))
+        store[n] = (store[n][0], True)
+    html = re.sub(r"<h1\b.*?</h1>", "", html, flags=re.S)        # gv shows the title itself
     # links between articles: wiki:Title (gv follows them with Enter)
     html = re.sub(r'<a [^>]*href="(?:\./)?([^"#:]+)"[^>]*>', lambda m: f'<a href="WIKILINK{m.group(1)}">', html)
-    md = subprocess.run(["pandoc", "-f", "html", "-t", "gfm", "--wrap=none"], input=html,
+    md = subprocess.run(["pandoc", "-f", "html", "-t", "gfm-raw_html", "--wrap=none"], input=html,
                         capture_output=True, text=True).stdout
     md = re.sub(r"\]\(WIKILINK([^)\s]+)\)", lambda m: f"](wiki:{m.group(1)})", md)
     md = re.sub(r"GVMATH(\d+)X", lambda m: (f"\n\n$${store[int(m.group(1))][0]}$$\n\n" if store[int(m.group(1))][1]
