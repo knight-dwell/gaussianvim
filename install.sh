@@ -92,6 +92,9 @@ rsync -a "$REPO/config/" "$CONF/"
 rsync -a --delete "$REPO/share/dictionary/" "$G/dictionary/"
 rsync -a "$REPO/share/brand/" "$G/brand/"
 cp "$REPO/docs/GUIDE.md" "$G/GUIDE.md"          # :GvGuide in gv
+if [[ ! -f $HOME/.config/zathura/zathurarc ]]; then      # the PDF viewer GaussianTeX opens
+  mkdir -p "$HOME/.config/zathura" && cp "$REPO/share/zathura/zathurarc" "$HOME/.config/zathura/zathurarc"
+fi
 for b in "$REPO"/bin/*; do install -m 755 "$b" "$BIN/"; done
 mkdir -p "$HOME/.local/share/applications" "$HOME/.local/share/icons/hicolor/scalable/apps"
 cp "$G/brand/gaussianvim.svg" "$G/brand/gaussiantex.svg" "$HOME/.local/share/icons/hicolor/scalable/apps/"

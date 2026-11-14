@@ -1,0 +1,13 @@
+# zathura: the PDF viewer GaussianTeX (gv) opens beside the editor via vimtex.
+# Ctrl+click on the text jumps to that line in gv (SyncTeX).
+set synctex true
+set selection-clipboard clipboard
+set window-title-basename true
+set adjust-open "width"
+set scroll-page-aware true
+set smooth-scroll true
+
+# the "you are here" mark (SyncTeX from gv) and search results: a faint blue
+# instead of zathura's default half-transparent green over figures
+set highlight-color "rgba(173,198,255,0.18)"
+set highlight-active-color "rgba(173,198,255,0.30)"

@@ -10,6 +10,7 @@ rs "$HOME/.config/gaussianvim/" "$R/config/"
 rs "$HOME/.local/share/gaussianvim/dictionary/" "$R/share/dictionary/"
 rs "$HOME/.local/share/gaussianvim/brand/" "$R/share/brand/"
 mkdir -p "$R/bin" "$R/applications"
+mkdir -p "$R/share/zathura" && cp "$HOME/.config/zathura/zathurarc" "$R/share/zathura/zathurarc"
 for b in gv gtex gv-dict vimhelp; do cp "$HOME/.local/bin/$b" "$R/bin/$b"; done
 for d in gaussianvim gaussiantex gaussianvim-dictionary; do
   sed "s|$HOME|@HOME@|g" "$HOME/.local/share/applications/$d.desktop" > "$R/applications/$d.desktop"
