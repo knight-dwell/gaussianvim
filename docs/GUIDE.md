@@ -169,7 +169,7 @@ In any Markdown file (`.md` notes, the docs and Stack Exchange readers),
 
 | Template | What you get |
 |---|---|
-| Thesis (JNCASR) | book + `jncthesis.sty`: title page with the logo, declaration, certificate, acknowledgements, publications, synopsis, chapters (each with references), appendix. Your details: `Formal/formal.tex` |
+| Thesis (JNCASR; on your laptop only, not in the public repo) | book + `jncthesis.sty`: title page with the logo, declaration, certificate, acknowledgements, publications, synopsis, chapters (each with references), appendix. Your details: `Formal/formal.tex` |
 | Physical Review B | REVTeX 4.2, two-column reprint style, APS references |
 | arXiv preprint | one-column article, authors with affiliations, natbib |
 | Nature letter | the nature class: summary paragraph, main text, Methods, addendum |
@@ -332,13 +332,11 @@ Dictionary by themselves.
 
 ## 9. Installing on another computer (Ubuntu)
 
-The repo is **private** (github.com/knight-dwell/gaussianvim). On the lab
-computer, once:
+The repo is public (github.com/knight-dwell/gaussianvim). On any computer:
 
 ```bash
-sudo apt install -y git gh
-gh auth login                       # log in to GitHub (browser or token)
-gh repo clone knight-dwell/gaussianvim ~/gaussianvim
+sudo apt install -y git
+git clone https://github.com/knight-dwell/gaussianvim ~/gaussianvim
 cd ~/gaussianvim && ./install.sh
 ```
 
@@ -353,9 +351,6 @@ It also works on Fedora (dnf) and Arch (pacman). Run it again to update.
 Then open a new terminal: `gv`, `gtex`, `gv-dict`. Plots inside the run card
 need the **kitty** terminal (the installer gives it the font).
 
-To make the repo public instead (then a plain `git clone
-https://github.com/knight-dwell/gaussianvim` works anywhere):
-`gh repo edit knight-dwell/gaussianvim --visibility public --accept-visibility-change-consequences`.
 
 ## 10. Updating the repo
 

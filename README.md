@@ -6,8 +6,8 @@ Neovim you already have without touching them.
 
 - **Run code with F5**: output, errors you can jump to, matplotlib plots and data
   files right inside a card (zoom, step through them), stop with Ctrl+C.
-- **LaTeX like Overleaf**: projects from templates (JNCASR thesis, Physical Review B,
-  arXiv, Nature, notes, book, Beamer), Compile / PDF buttons, compile on save,
+- **LaTeX like Overleaf**: projects from templates (Physical Review B,
+  arXiv, Nature, notes, book, Beamer; add your own), Compile / PDF buttons, compile on save,
   zathura beside the editor with SyncTeX, spell + grammar checks, the command menu,
   full environment templates, short maths aliases (`//` → `\frac{}{}`, `;a` → `\alpha`),
   figure previews, project files with upload, zip export.
@@ -30,7 +30,7 @@ Neovim you already have without touching them.
 ## Install (Ubuntu, Debian, Fedora, Arch)
 
 ```bash
-gh repo clone knight-dwell/gaussianvim ~/gaussianvim   # private repo: gh auth login first
+git clone https://github.com/knight-dwell/gaussianvim ~/gaussianvim
 cd ~/gaussianvim && ./install.sh                       # --help for options
 ```
 
@@ -48,5 +48,4 @@ inside gv): every key, every template, every alias with examples.
 
 `./sync.sh` copies the live files of this machine back into the repo before a commit.
 
-KaTeX (in `share/dictionary/web/katex`) is MIT licensed. `config/tex-templates/thesis-jncasr`
-carries JNCASR's `jncthesis.sty` and logo for the thesis template.
+KaTeX (in `share/dictionary/web/katex`) is MIT licensed.

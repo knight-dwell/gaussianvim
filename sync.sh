@@ -6,7 +6,8 @@ set -euo pipefail
 R="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "$R/share"
 rs() { rsync -a --delete --exclude '__pycache__' --exclude '*.pyc' "$@"; }
-rs "$HOME/.config/gaussianvim/" "$R/config/"
+# the JNCASR thesis template (its logo and jncthesis.sty) stays on this machine only
+rs --exclude "tex-templates/thesis-jncasr" "$HOME/.config/gaussianvim/" "$R/config/"
 rs "$HOME/.local/share/gaussianvim/dictionary/" "$R/share/dictionary/"
 rs "$HOME/.local/share/gaussianvim/brand/" "$R/share/brand/"
 mkdir -p "$R/bin" "$R/applications"
