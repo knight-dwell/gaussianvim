@@ -122,6 +122,15 @@ the next 100. Enter reads the question with its best answers inside gv, with the
 typeset (Physics and Mathematics); `q` goes back to the results, `Q` closes,
 `o` opens it in the browser.
 
+### Wikipedia
+
+`Space s w` searches Wikipedia (the word under the cursor, or your selection).
+Online results come from en.wikipedia.org; the **offline physics and maths
+Wikipedia** (Kiwix, ~650 MB, `:GvWiki install`) answers too, and alone when
+there is no internet. Articles open with the maths typeset: **Enter** on a link
+opens that article, **t** lists the sections to jump to, **q** goes back,
+**o** opens it in the browser.
+
 ### Claude
 
 Claude Code runs in a panel on the right, in your project folder. It can read

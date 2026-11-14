@@ -215,3 +215,5 @@ ai	Space a w	(.tex) Claude checks the paragraph: wording, grammar, physics logic
 misc	:GvGuide	the guide to GaussianVim and GaussianTeX (with alias examples)	guide manual documentation help tutorial readme
 latex	Space l F  or  the ⚡ button	fast mode: typeset only the chapter you are writing (front matter included); much faster saves. Again for the whole document	fast speed quick compile chapter includeonly slow
 latex	Space l Q	full-quality PDF from your original figures (everyday compiles use print-resolution copies in .gvfast, your files untouched)	final quality print figures images resolution submit
+docs	Space s w	Wikipedia: online + the offline physics and maths Wikipedia; articles with typeset maths, Enter follows a link, t jumps to a section, q goes back	wikipedia encyclopedia article wiki definition explain concept offline
+docs	:GvWiki install	download the offline physics + maths Wikipedia (~650 MB, Kiwix)	wikipedia offline download kiwix zim

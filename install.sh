@@ -7,6 +7,7 @@
 #   --yes        don't ask anything (install Claude Code too)
 #   --no-tex     skip TeX Live, zathura (GaussianTeX needs them; ~1-2 GB)
 #   --no-docs    skip the offline docs download (NumPy, Matplotlib, Python, ...; ~150 MB)
+#   --no-wiki    skip the offline physics + maths Wikipedia (~650 MB; online Wikipedia still works)
 #   --no-claude  don't offer Claude Code
 #   --no-system  don't install system packages (no sudo needed); only copy GaussianVim
 #
@@ -17,10 +18,10 @@ REPO="$(cd "$(dirname "$0")" && pwd)"
 NVIM_VERSION="v0.12.6"
 G="$HOME/.local/share/gaussianvim"
 BIN="$HOME/.local/bin"
-YES=0 TEX=1 DOCS=1 CLAUDE=1 SYSTEM=1
+YES=0 TEX=1 DOCS=1 CLAUDE=1 SYSTEM=1 WIKI=1
 for a in "$@"; do
   case "$a" in
-    --yes) YES=1 ;; --no-tex) TEX=0 ;; --no-docs) DOCS=0 ;; --no-claude) CLAUDE=0 ;; --no-system) SYSTEM=0 ;;
+    --yes) YES=1 ;; --no-tex) TEX=0 ;; --no-docs) DOCS=0 ;; --no-claude) CLAUDE=0 ;; --no-system) SYSTEM=0 ;; --no-wiki) WIKI=0 ;;
     -h|--help) sed -n '2,15p' "$0"; exit 0 ;;
     *) echo "unknown option $a (see --help)"; exit 1 ;;
   esac
@@ -147,6 +148,15 @@ if [[ $DOCS == 1 ]]; then
   say "Offline docs: NumPy, Matplotlib, Python, pandas, LaTeX, Fortran, Bash + SciPy (~150 MB)"
   "$G/nvim/bin/nvim" --headless -c 'lua local d=false; require("gv.docs").install(nil, function() d=true end); vim.wait(1800000, function() return d end, 500); vim.wait(120000, function() return vim.uv.fs_stat(vim.fn.stdpath("data").."/docs/pydoc-scipy.json") ~= nil end, 500)' -c qa || \
     note "docs download failed; in gv: :GvDocs install"
+fi
+
+# ── 6b. offline Wikipedia (physics + maths, Kiwix) ─────────────────────────────
+python3 -m pip install --user --quiet libzim 2>/dev/null || python3 -m pip install --user --quiet --break-system-packages libzim 2>/dev/null || \
+  note "libzim didn't install: offline Wikipedia needs  pip install --user libzim"
+if [[ $WIKI == 1 ]]; then
+  say "Offline physics + maths Wikipedia (~650 MB)"
+  "$G/nvim/bin/nvim" --headless -c 'lua require("gv.wiki").install(); vim.wait(3600000, function() return #vim.fn.glob(vim.fn.stdpath("data").."/wiki/*.part", false, true) == 0 and #vim.fn.glob(vim.fn.stdpath("data").."/wiki/*.zim", false, true) >= 2 end, 2000)' -c qa || \
+    note "Wikipedia download failed; in gv: :GvWiki install"
 fi
 
 # ── 7. Claude Code (Space a a in gv) ───────────────────────────────────────────
