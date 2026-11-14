@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # GaussianVim + GaussianTeX installer (Ubuntu / Debian, Fedora, Arch).
 #
-#   git clone git@github.com:knight-dwell/gaussianvim.git && cd gaussianvim && ./install.sh
+#   git clone https://github.com/knight-dwell/gaussianvim ~/gaussianvim && cd ~/gaussianvim && ./install.sh
 #
 # Options:
 #   --yes        don't ask anything (install Claude Code too)
