@@ -1,0 +1,6 @@
+# zathura inside the GaussianTeX window's PDF pane (lua/gv/pdfdock.lua passes -c here):
+# your usual settings, plus a short status bar so the pane can be narrow
+include ../../zathura/zathurarc
+set statusbar-basename true
+set statusbar-home-tilde true
+set adjust-open "width"

@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# gv-doctor: is everything GaussianVim / GaussianTeX needs installed? Lists each part
+# as ✓ / ✗ (needed) / ○ (optional) with what it is for. Fix: run install.sh again
+# (cd ~/gaussianvim && ./install.sh), or the package named on the line.
+G="$HOME/.local/share/gaussianvim"
+[[ -x $G/node/bin/node ]] && PATH="$G/node/bin:$PATH"
+PATH="$HOME/.local/bin:$PATH"
+miss=0 opt=0
+ok()   { printf '  \033[32m✓\033[0m %-22s %s\n' "$1" "$2"; }
+bad()  { printf '  \033[31m✗\033[0m %-22s %s\n' "$1" "$2"; miss=$((miss + 1)); }
+soft() { printf '  \033[33m○\033[0m %-22s %s\n' "$1" "$2"; opt=$((opt + 1)); }
+have() { command -v "$1" >/dev/null 2>&1; }
+# check NAME "what for" required(1/0) test-command...
+check() {
+  local name=$1 why=$2 need=$3; shift 3
+  if "$@" >/dev/null 2>&1; then ok "$name" "$why"; elif [[ $need == 1 ]]; then bad "$name" "$why"; else soft "$name" "$why"; fi
+}
+py() { python3 -c "$1"; }
+gi() { py "import gi; gi.require_version('$1', '$2'); from gi.repository import $1"; }
+
+echo "GaussianVim"
+check "neovim (own copy)"  "the editor ($G/nvim)" 1 test -x "$G/nvim/bin/nvim"
+check "gv, gtex on PATH"   "the commands (~/.local/bin)" 1 have gv
+check "git"                "plugins, git menu, config history" 1 have git
+check "curl"               "downloads, Wikipedia, Stack Exchange" 1 have curl
+check "ripgrep (rg)"       "search text in the project" 1 have rg
+check "fd / fdfind"        "find files" 0 bash -c 'command -v fd || command -v fdfind'
+check "node >= 18"         "language servers (Python, Bash, ...)" 1 bash -c 'v=$(node -v 2>/dev/null); v=${v#v}; [[ ${v%%.*} -ge 18 ]]'
+check "npm"                "installs language servers" 1 have npm
+check "gcc / make"         "plugin builds, C / C++ runs" 1 have gcc
+check "gfortran"           "Fortran runs (F5)" 0 have gfortran
+check "python3"            "Python runs, the windows, docs" 1 have python3
+check "numpy scipy mpl"    "plots in the run card" 0 py "import numpy, scipy, matplotlib"
+check "tkinter"            "plots as real windows (w in the run card)" 0 py "import tkinter"
+check "Nerd Font"          "the icons" 1 bash -c 'fc-list | grep -qi "Nerd"'
+check "pandoc"             "docs, Stack Exchange, Wikipedia as text" 1 have pandoc
+check "xclip / wl-copy"    "the system clipboard" 1 bash -c 'command -v xclip || command -v wl-copy'
+check "kitty"              "plots and maths drawn inside gv (optional)" 0 have kitty
+check "claude"             "the Claude panel, Space a a (optional)" 0 bash -c 'command -v claude || test -x ~/.local/bin/claude'
+
+echo
+echo "Windows (Material look, Reader)"
+check "a desktop session"  "the GaussianTeX / GaussianVim window" 0 bash -c '[[ -n $DISPLAY || -n $WAYLAND_DISPLAY ]]'
+check "PyGObject + GTK 3"  "the windows (python3-gi, gir1.2-gtk-3.0)" 1 gi Gtk 3.0
+check "VTE 2.91"           "gv inside the window (gir1.2-vte-2.91)" 1 gi Vte 2.91
+check "WebKit2GTK"         "the Reader: equations + figures (gir1.2-webkit2-4.1)" 1 bash -c "python3 -c \"import gi
+try: gi.require_version('WebKit2','4.1')
+except ValueError: gi.require_version('WebKit2','4.0')
+from gi.repository import WebKit2\""
+check "xdotool"            "window focus, PDF jumps" 0 have xdotool
+check "libzim"             "offline Wikipedia (pip install --user libzim)" 0 py "import libzim"
+check "offline Wikipedia"  ":GvWiki install (~650 MB)" 0 bash -c "ls $G/wiki/*.zim"
+
+echo
+TEXNEED=1
+if [[ $(cat "$G/install-profile" 2>/dev/null) == vim ]]; then
+  TEXNEED=0; echo "GaussianTeX (LaTeX; not installed: GaussianVim-only install, ./install.sh adds it)"
+else
+  echo "GaussianTeX (LaTeX)"
+fi
+check "pdflatex"           "compiling" $TEXNEED have pdflatex
+check "latexmk"            "compile on save" $TEXNEED have latexmk
+check "revtex / nature"    "the PRB and Nature templates" 0 bash -c 'kpsewhich revtex4-2.cls && kpsewhich nature.cls'
+check "zathura"            "the PDF beside gv" $TEXNEED have zathura
+check "pdftocairo"         "maths as pictures (poppler-utils)" 0 have pdftocairo
+check "zenity"             "file choosers (upload figures)" 0 have zenity
+
+echo
+look=$(git -C "$HOME/.config/gaussianvim" branch --show-current 2>/dev/null)
+echo "Look: ${look:-unknown}   (gv-theme material | classic)"
+if [[ $miss -eq 0 ]]; then
+  printf '\033[32mEverything needed is installed.\033[0m'; [[ $opt -gt 0 ]] && printf ' (%d optional parts missing)' "$opt"; echo
+else
+  printf '\033[31m%d needed part(s) missing.\033[0m Run the installer again: cd ~/gaussianvim && ./install.sh\n' "$miss"
+  exit 1
+fi

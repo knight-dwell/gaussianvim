@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# gv-theme: switch GaussianVim / GaussianTeX between the two looks of the config
+# (git branches in ~/.config/gaussianvim) and set the app launchers to match.
+#   gv-theme material     Material title bar, rounded editor / file tree, rendered Wikipedia reader
+#   gv-theme classic      the look before that (opens in a terminal, old toolbar)
+#   gv-theme              which one is active
+#   gv-theme --launchers  only rewrite the app-menu launchers for the active look (install.sh)
+# Inside gv: Space u T or :GvTheme. Close gv / gtex first; restart them after switching.
+set -e
+CFG="$HOME/.config/gaussianvim"
+APPS="$HOME/.local/share/applications"
+BIN="$HOME/.local/bin"
+cur=$(git -C "$CFG" branch --show-current 2>/dev/null || echo material)
+
+# a terminal for the classic launcher: kitty (draws plots and maths), else what the desktop has
+terminal() {
+  local cls=$1 title=$2
+  if command -v kitty >/dev/null; then echo "kitty --class $cls --title $title -e"
+  elif command -v gnome-terminal >/dev/null; then echo "gnome-terminal --title=$title --"
+  elif command -v konsole >/dev/null; then echo "konsole -e"
+  elif command -v xfce4-terminal >/dev/null; then echo "xfce4-terminal --title=$title -x"
+  else echo "x-terminal-emulator -e"; fi
+}
+
+launchers() {
+  local look=$1 vim_exec tex_exec
+  if [[ $look == material ]]; then
+    vim_exec="python3 $CFG/runner/gvwindow.py --gv $BIN/gv %F"
+    tex_exec="$BIN/gtex"
+  else
+    vim_exec="$(terminal GaussianVim GaussianVim) $BIN/gv %F"
+    tex_exec="$(terminal GaussianTeX GaussianTeX) $BIN/gtex"
+  fi
+  [[ -f $APPS/gaussianvim.desktop ]] && sed -i "s|^Exec=.*|Exec=$vim_exec|" "$APPS/gaussianvim.desktop"
+  [[ -f $APPS/gaussiantex.desktop ]] && sed -i "s|^Exec=.*|Exec=$tex_exec|" "$APPS/gaussiantex.desktop"
+  return 0
+}
+
+case "${1:-}" in
+  "") echo "active: $cur  (gv-theme material | classic)"; exit 0 ;;
+  --launchers) launchers "$cur"; exit 0 ;;
+  material|classic) ;;
+  *) echo "usage: gv-theme [material|classic|--launchers]" >&2; exit 1 ;;
+esac
+if ! git -C "$CFG" rev-parse --verify -q "$1" >/dev/null; then
+  echo "this config has no '$1' look (run the installer again)" >&2; exit 1
+fi
+if [[ -n $(git -C "$CFG" status --porcelain) ]]; then
+  git -C "$CFG" add -A
+  git -C "$CFG" -c user.name=GaussianVim -c user.email=gaussianvim@localhost commit -qm "Changes before switching to $1"
+  echo "committed unsaved config changes on '$cur'"
+fi
+git -C "$CFG" checkout -q "$1"
+launchers "$1"
+echo "switched to: $1  (restart gv / gtex)"

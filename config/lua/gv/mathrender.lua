@@ -39,8 +39,12 @@ local function pump()
     local f = io.open(base .. ".tex", "w")
     f:write(job.src)
     f:close()
-    vim.system({ "sh", "-c", ('pdflatex -interaction=nonstopmode -halt-on-error -output-directory "%s" "%s.tex" >/dev/null 2>&1 && magick -density 220 -background none "%s.pdf" -trim +repage "%s.png" >/dev/null 2>&1; rm -f "%s.aux" "%s.log"')
-      :format(CACHE, base, base, base, base, base) }, {}, function()
+    -- PDF -> PNG: ImageMagick 7 (magick), else poppler's pdftocairo (Ubuntu 22.04 has no magick)
+    local topng = vim.fn.executable("magick") == 1
+      and ('magick -density 220 -background none "%s.pdf" -trim +repage "%s.png"'):format(base, base)
+      or ('pdftocairo -png -singlefile -transp -r 220 "%s.pdf" "%s"'):format(base, base)
+    vim.system({ "sh", "-c", ('pdflatex -interaction=nonstopmode -halt-on-error -output-directory "%s" "%s.tex" >/dev/null 2>&1 && %s >/dev/null 2>&1; rm -f "%s.aux" "%s.log"')
+      :format(CACHE, base, topng, base, base) }, {}, function()
       vim.schedule(function()
         running = running - 1
         job.cb(vim.uv.fs_stat(base .. ".png") and (base .. ".png") or nil)
@@ -93,7 +97,7 @@ function M.render(buf)
   -- Markdown with the latex parser installed: Snacks typesets the maths itself
   if vim.bo[buf].filetype == "markdown" and pcall(vim.treesitter.language.add, "latex")
     and vim.treesitter.language.add("latex") then return end
-  if vim.fn.executable("pdflatex") == 0 or vim.fn.executable("magick") == 0 then return end
+  if vim.fn.executable("pdflatex") == 0 or (vim.fn.executable("magick") == 0 and vim.fn.executable("pdftocairo") == 0) then return end
   local color = fg_hex()
   local width = 100
   for _, w in ipairs(vim.fn.win_findbuf(buf)) do width = vim.api.nvim_win_get_width(w) end

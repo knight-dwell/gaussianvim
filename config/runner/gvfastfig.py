@@ -25,6 +25,7 @@ def main():
     root = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else ".")
     limit = int(sys.argv[2]) if len(sys.argv) > 2 else 4000
     cache = os.path.join(root, ".gvfast")
+    os.makedirs(cache, exist_ok=True)   # always: gv checks for it to know the cache is ready
     made = reused = 0
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = [d for d in dirnames if d not in SKIP]

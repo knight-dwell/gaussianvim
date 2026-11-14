@@ -76,7 +76,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
     map("<leader>lr", vim.lsp.buf.rename, "Rename everywhere")
     map("<leader>ls", function() Snacks.picker.lsp_symbols() end, "Functions / classes in this file")
     map("<leader>lS", function() Snacks.picker.lsp_workspace_symbols() end, "Symbols in the project")
-    map("<leader>le", function() Snacks.picker.qflist() end, "Quickfix list")
+    map("<leader>le", function()
+      if vim.bo.filetype == "tex" then return require("gv.tex").errors() end
+      vim.cmd("botright copen 8")
+    end, "Error list (bottom panel)")
 
     -- breadcrumbs at the top of the window (file > class > function), like LunarVim
     local client = vim.lsp.get_client_by_id(ev.data.client_id)

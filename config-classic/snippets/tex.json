@@ -1,0 +1,527 @@
+{
+  "Figure": {
+    "prefix": [
+      "figure",
+      "fig"
+    ],
+    "body": [
+      "\\\\begin{figure}[htbp]",
+      "\t\\\\centering",
+      "\t\\\\includegraphics[width=${1:0.8}\\\\linewidth]{${2:file}}",
+      "\t\\\\caption{${3:Caption}}",
+      "\t\\\\label{fig:${4:name}}",
+      "\\\\end{figure}",
+      "$0"
+    ],
+    "description": "A figure: centred picture, caption and label",
+    "keywords": "image picture graphic plot photo includegraphics insert figure caption"
+  },
+  "Table": {
+    "prefix": [
+      "table",
+      "tab"
+    ],
+    "body": [
+      "\\\\begin{table}[htbp]",
+      "\t\\\\centering",
+      "\t\\\\caption{${1:Caption}}",
+      "\t\\\\label{tab:${2:name}}",
+      "\t\\\\begin{tabular}{${3:c c c}}",
+      "\t\t\\\\hline",
+      "\t\t${4:A} & ${5:B} & ${6:C} \\\\\\\\",
+      "\t\t\\\\hline",
+      "\t\t${7:1} & ${8:2} & ${9:3} \\\\\\\\",
+      "\t\t\\\\hline",
+      "\t\\\\end{tabular}",
+      "\\\\end{table}",
+      "$0"
+    ],
+    "description": "A table: caption, label and a 3-column tabular with lines (no extra package)",
+    "keywords": "tabular grid rows columns data table caption"
+  },
+  "Tabular": {
+    "prefix": [
+      "tabular"
+    ],
+    "body": [
+      "\\\\begin{tabular}{${1:c c}}",
+      "\t\\\\hline",
+      "\t${2:A} & ${3:B} \\\\\\\\",
+      "\t\\\\hline",
+      "\\\\end{tabular}",
+      "$0"
+    ],
+    "description": "A tabular on its own",
+    "keywords": "table grid rows columns"
+  },
+  "Equation": {
+    "prefix": [
+      "equation",
+      "eq"
+    ],
+    "body": [
+      "\\\\begin{equation}",
+      "\t$1",
+      "\\\\end{equation}",
+      "$0"
+    ],
+    "description": "A numbered equation",
+    "keywords": "formula maths math numbered display equation"
+  },
+  "Equation with label": {
+    "prefix": [
+      "eql"
+    ],
+    "body": [
+      "\\\\begin{equation}",
+      "\t$1",
+      "\t\\\\label{eq:${2:name}}",
+      "\\\\end{equation}",
+      "$0"
+    ],
+    "description": "A numbered equation with a label",
+    "keywords": "formula numbered reference ref label equation"
+  },
+  "Align": {
+    "prefix": [
+      "align",
+      "ali"
+    ],
+    "body": [
+      "\\\\begin{align}",
+      "\t${1:a} &= ${2:b} \\\\\\\\",
+      "\t${3:c} &= ${4:d}",
+      "\\\\end{align}",
+      "$0"
+    ],
+    "description": "Equations lined up at the = signs (amsmath)",
+    "keywords": "aligned equations several lines system multiline"
+  },
+  "Itemize": {
+    "prefix": [
+      "itemize",
+      "item"
+    ],
+    "body": [
+      "\\\\begin{itemize}",
+      "\t\\\\item $1",
+      "\\\\end{itemize}",
+      "$0"
+    ],
+    "description": "A bullet list",
+    "keywords": "bullet list points unordered"
+  },
+  "Enumerate": {
+    "prefix": [
+      "enumerate",
+      "enum"
+    ],
+    "body": [
+      "\\\\begin{enumerate}",
+      "\t\\\\item $1",
+      "\\\\end{enumerate}",
+      "$0"
+    ],
+    "description": "A numbered list",
+    "keywords": "numbered list ordered 1 2 3"
+  },
+  "Matrix (round brackets)": {
+    "prefix": [
+      "matrix",
+      "pmatrix"
+    ],
+    "body": [
+      "\\\\begin{pmatrix}",
+      "\t${1:a} & ${2:b} \\\\\\\\",
+      "\t${3:c} & ${4:d}",
+      "\\\\end{pmatrix}$0"
+    ],
+    "description": "A 2x2 matrix in ( ) (amsmath pmatrix); add & for columns, \\\\ for rows",
+    "keywords": "matrix array parentheses pmatrix linear algebra"
+  },
+  "Matrix (square brackets)": {
+    "prefix": [
+      "bmatrix"
+    ],
+    "body": [
+      "\\\\begin{bmatrix}",
+      "\t${1:a} & ${2:b} \\\\\\\\",
+      "\t${3:c} & ${4:d}",
+      "\\\\end{bmatrix}$0"
+    ],
+    "description": "A 2x2 matrix in [ ] (amsmath bmatrix)",
+    "keywords": "matrix array brackets bmatrix linear algebra"
+  },
+  "Determinant": {
+    "prefix": [
+      "vmatrix",
+      "det"
+    ],
+    "body": [
+      "\\\\begin{vmatrix}",
+      "\t${1:a} & ${2:b} \\\\\\\\",
+      "\t${3:c} & ${4:d}",
+      "\\\\end{vmatrix}$0"
+    ],
+    "description": "A determinant | | (amsmath vmatrix)",
+    "keywords": "determinant vmatrix matrix bars"
+  },
+  "Cases": {
+    "prefix": [
+      "cases"
+    ],
+    "body": [
+      "\\\\begin{cases}",
+      "\t${1:f} & \\\\text{if } ${2:x > 0} \\\\\\\\",
+      "\t${3:g} & \\\\text{otherwise}",
+      "\\\\end{cases}$0"
+    ],
+    "description": "A piecewise definition (amsmath)",
+    "keywords": "piecewise function conditions brace if otherwise"
+  },
+  "Section": {
+    "prefix": [
+      "sec"
+    ],
+    "body": [
+      "\\\\section{$1}$0"
+    ],
+    "description": "\\section{...}",
+    "keywords": "heading chapter title section"
+  },
+  "Subsection": {
+    "prefix": [
+      "sub"
+    ],
+    "body": [
+      "\\\\subsection{$1}$0"
+    ],
+    "description": "\\subsection{...}",
+    "keywords": "heading subheading section"
+  },
+  "Subsubsection": {
+    "prefix": [
+      "subsub"
+    ],
+    "body": [
+      "\\\\subsubsection{$1}$0"
+    ],
+    "description": "\\subsubsection{...}",
+    "keywords": "heading subheading"
+  },
+  "Fraction": {
+    "prefix": [
+      "frac"
+    ],
+    "body": [
+      "\\\\frac{$1}{$2}$0"
+    ],
+    "description": "\\frac{a}{b}",
+    "keywords": "fraction divide division ratio over numerator denominator quotient"
+  },
+  "Integral": {
+    "prefix": [
+      "intgrl",
+      "int"
+    ],
+    "body": [
+      "\\\\int_{${1:a}}^{${2:b}} ${3:f(x)} \\\\, \\\\mathrm{d}${4:x}$0"
+    ],
+    "description": "Definite integral with limits and dx",
+    "keywords": "integral integrate integration area definite limits dx"
+  },
+  "Integral over all x": {
+    "prefix": [
+      "intinf"
+    ],
+    "body": [
+      "\\\\int_{-\\\\infty}^{\\\\infty} ${1:f(x)} \\\\, \\\\mathrm{d}${2:x}$0"
+    ],
+    "description": "Integral from -inf to inf",
+    "keywords": "integral infinity improper whole line"
+  },
+  "Double integral": {
+    "prefix": [
+      "iint"
+    ],
+    "body": [
+      "\\\\iint ${1:f(x,y)} \\\\, \\\\mathrm{d}${2:x} \\\\, \\\\mathrm{d}${3:y}$0"
+    ],
+    "description": "Double integral (amsmath)",
+    "keywords": "integral surface area two variables"
+  },
+  "Sum": {
+    "prefix": [
+      "sum"
+    ],
+    "body": [
+      "\\\\sum_{${1:i=1}}^{${2:N}} $0"
+    ],
+    "description": "Sum with limits",
+    "keywords": "sum summation sigma series total"
+  },
+  "Product": {
+    "prefix": [
+      "prod"
+    ],
+    "body": [
+      "\\\\prod_{${1:i=1}}^{${2:N}} $0"
+    ],
+    "description": "Product with limits",
+    "keywords": "product pi multiply"
+  },
+  "Limit": {
+    "prefix": [
+      "lim"
+    ],
+    "body": [
+      "\\\\lim_{${1:x \\\\to 0}} $0"
+    ],
+    "description": "Limit",
+    "keywords": "limit tends approaches goes to"
+  },
+  "Partial derivative": {
+    "prefix": [
+      "pdv"
+    ],
+    "body": [
+      "\\\\frac{\\\\partial ${1:f}}{\\\\partial ${2:x}}$0"
+    ],
+    "description": "df/dx, partial",
+    "keywords": "derivative partial differentiate slope rate"
+  },
+  "Second partial derivative": {
+    "prefix": [
+      "pdv2"
+    ],
+    "body": [
+      "\\\\frac{\\\\partial^2 ${1:f}}{\\\\partial ${2:x}^2}$0"
+    ],
+    "description": "d2f/dx2, partial",
+    "keywords": "derivative second partial curvature"
+  },
+  "Mixed partial derivative": {
+    "prefix": [
+      "pdvm"
+    ],
+    "body": [
+      "\\\\frac{\\\\partial^2 ${1:f}}{\\\\partial ${2:x} \\\\, \\\\partial ${3:y}}$0"
+    ],
+    "description": "d2f/dxdy, partial",
+    "keywords": "derivative mixed cross partial"
+  },
+  "Derivative": {
+    "prefix": [
+      "dv"
+    ],
+    "body": [
+      "\\\\frac{\\\\mathrm{d} ${1:f}}{\\\\mathrm{d} ${2:x}}$0"
+    ],
+    "description": "df/dx",
+    "keywords": "derivative differentiate ordinary total slope rate"
+  },
+  "Second derivative": {
+    "prefix": [
+      "dv2"
+    ],
+    "body": [
+      "\\\\frac{\\\\mathrm{d}^2 ${1:f}}{\\\\mathrm{d} ${2:x}^2}$0"
+    ],
+    "description": "d2f/dx2",
+    "keywords": "derivative second acceleration curvature"
+  },
+  "Time derivative (dot)": {
+    "prefix": [
+      "dot"
+    ],
+    "body": [
+      "\\\\dot{${1:x}}$0"
+    ],
+    "description": "x with a dot",
+    "keywords": "derivative time velocity newton dot"
+  },
+  "Second time derivative": {
+    "prefix": [
+      "ddot"
+    ],
+    "body": [
+      "\\\\ddot{${1:x}}$0"
+    ],
+    "description": "x with two dots",
+    "keywords": "derivative time acceleration two dots"
+  },
+  "Gradient": {
+    "prefix": [
+      "grad"
+    ],
+    "body": [
+      "\\\\nabla ${1:f}$0"
+    ],
+    "description": "nabla f",
+    "keywords": "gradient nabla del grad"
+  },
+  "Divergence": {
+    "prefix": [
+      "divg"
+    ],
+    "body": [
+      "\\\\nabla \\\\cdot ${1:A}$0"
+    ],
+    "description": "nabla . A",
+    "keywords": "divergence nabla dot del flux"
+  },
+  "Curl": {
+    "prefix": [
+      "curl"
+    ],
+    "body": [
+      "\\\\nabla \\\\times ${1:A}$0"
+    ],
+    "description": "nabla x A",
+    "keywords": "curl rotation nabla cross"
+  },
+  "Laplacian": {
+    "prefix": [
+      "lap"
+    ],
+    "body": [
+      "\\\\nabla^2 ${1:f}$0"
+    ],
+    "description": "nabla^2 f",
+    "keywords": "laplacian nabla squared del"
+  },
+  "Square root": {
+    "prefix": [
+      "sqrt"
+    ],
+    "body": [
+      "\\\\sqrt{$1}$0"
+    ],
+    "description": "\\sqrt{...}",
+    "keywords": "root square radical sqrt"
+  },
+  "Bra": {
+    "prefix": [
+      "bra"
+    ],
+    "body": [
+      "\\\\langle ${1:\\\\psi} \\\\rvert$0"
+    ],
+    "description": "<psi|",
+    "keywords": "quantum dirac state bra vector"
+  },
+  "Ket": {
+    "prefix": [
+      "ket"
+    ],
+    "body": [
+      "\\\\lvert ${1:\\\\psi} \\\\rangle$0"
+    ],
+    "description": "|psi>",
+    "keywords": "quantum dirac state ket vector"
+  },
+  "Braket": {
+    "prefix": [
+      "braket"
+    ],
+    "body": [
+      "\\\\langle ${1:\\\\phi} \\\\vert ${2:\\\\psi} \\\\rangle$0"
+    ],
+    "description": "<phi|psi>",
+    "keywords": "quantum dirac inner product overlap amplitude"
+  },
+  "Expectation value": {
+    "prefix": [
+      "avg",
+      "expval"
+    ],
+    "body": [
+      "\\\\langle ${1:A} \\\\rangle$0"
+    ],
+    "description": "<A>",
+    "keywords": "average mean expectation quantum angle brackets"
+  },
+  "Absolute value": {
+    "prefix": [
+      "abs"
+    ],
+    "body": [
+      "\\\\lvert ${1:x} \\\\rvert$0"
+    ],
+    "description": "|x| (amsmath)",
+    "keywords": "absolute modulus magnitude bars"
+  },
+  "Norm": {
+    "prefix": [
+      "norm"
+    ],
+    "body": [
+      "\\\\lVert ${1:x} \\\\rVert$0"
+    ],
+    "description": "||x|| (amsmath)",
+    "keywords": "norm length magnitude double bars"
+  },
+  "Vector": {
+    "prefix": [
+      "vec"
+    ],
+    "body": [
+      "\\\\vec{${1:r}}$0"
+    ],
+    "description": "arrow over r",
+    "keywords": "vector arrow"
+  },
+  "Bold vector": {
+    "prefix": [
+      "bvec"
+    ],
+    "body": [
+      "\\\\mathbf{${1:r}}$0"
+    ],
+    "description": "bold r",
+    "keywords": "vector bold"
+  },
+  "Hat": {
+    "prefix": [
+      "hat"
+    ],
+    "body": [
+      "\\\\hat{${1:H}}$0"
+    ],
+    "description": "H with a hat (operators)",
+    "keywords": "operator hat unit vector"
+  },
+  "Scientific number": {
+    "prefix": [
+      "sci"
+    ],
+    "body": [
+      "${1:1.0} \\\\times 10^{${2:3}}$0"
+    ],
+    "description": "1.0 x 10^3",
+    "keywords": "scientific notation exponent power ten times"
+  },
+  "Inline maths": {
+    "prefix": [
+      "im"
+    ],
+    "body": [
+      "\\$$1\\$$0"
+    ],
+    "description": "$...$ in the text",
+    "keywords": "inline math maths dollar in text"
+  },
+  "Display maths": {
+    "prefix": [
+      "dm"
+    ],
+    "body": [
+      "\\\\[",
+      "\t$1",
+      "\\\\]",
+      "$0"
+    ],
+    "description": "Unnumbered displayed maths",
+    "keywords": "display math maths centred unnumbered"
+  }
+}

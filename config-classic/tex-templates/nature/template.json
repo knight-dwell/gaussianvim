@@ -1,0 +1,6 @@
+{
+  "name": "Nature-style letter (nature class)",
+  "description": "the classic nature.cls + naturemag references: title, affiliations, summary paragraph, main text without section numbers, Methods, addendum (acknowledgements, contributions, competing interests)",
+  "main": "main.tex",
+  "order": 4
+}

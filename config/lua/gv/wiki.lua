@@ -9,6 +9,8 @@
 --   Enter on a link   open that article      t   the sections, jump to one
 --   q                 back (previous article, else the results)
 --   Q / Esc           close                  o   open in the browser
+--   p                 the rendered reader: equations + figures (lua/gv/reader.lua);
+--                     opens by itself where the terminal can't draw pictures
 local M = {}
 local API = "https://en.wikipedia.org/w/api.php"
 local UA = "GaussianVim/1.0 (offline physics editor)"
@@ -95,8 +97,10 @@ local function open_article(item)
     relative = "editor", row = 2, col = math.floor((vim.o.columns - w) / 2), width = w, height = vim.o.lines - 6,
     border = "rounded", style = "minimal",
     title = { { " \u{f05ac} " .. item.title .. "  ·  " .. (item.source or "Wikipedia") .. " ", "FloatTitle" } },
-    footer = { { " Enter follow link · t sections · q back · Q close · o browser ", "FloatFooter" } }, footer_pos = "right",
+    footer = { { " Enter follow link · t sections · p rendered · q back · Q close · o browser ", "FloatFooter" } }, footer_pos = "right",
   })
+  local reader_args = item.zim and { "zim", item.zim, item.path or item.title } or { "wiki", item.title }
+  require("gv.reader").auto(reader_args)
   vim.wo[win].wrap, vim.wo[win].linebreak, vim.wo[win].conceallevel = true, true, 2
   local function map(k, fn) vim.keymap.set("n", k, fn, { buffer = buf, nowait = true }) end
   map("q", function()
@@ -109,6 +113,7 @@ local function open_article(item)
   map("o", function()
     vim.ui.open("https://en.wikipedia.org/wiki/" .. item.title:gsub(" ", "_"))
   end)
+  map("p", function() require("gv.reader").open(reader_args) end)
   -- Enter on a [link](wiki:Title): that article
   map("<CR>", function()
     local line, col = vim.api.nvim_get_current_line(), vim.api.nvim_win_get_cursor(0)[2] + 1

@@ -27,25 +27,43 @@ Neovim you already have without touching them.
 
 *(Plots inside the run card and typeset equations are drawn by kitty and don't show in these terminal captures.)*
 
-## Install (Ubuntu, Debian, Fedora, Arch)
+## Install (any recent Linux: Ubuntu, Debian, Mint, Fedora, Arch, openSUSE)
+
+From nothing; the installer brings every dependency (its own Neovim, Node when the
+system one is too old, Python, compilers, GTK/WebKit, TeX Live, fonts):
 
 ```bash
-git clone https://github.com/knight-dwell/gaussianvim ~/gaussianvim
-cd ~/gaussianvim && ./install.sh                       # --help for options
+curl -fsSL https://raw.githubusercontent.com/knight-dwell/gaussianvim/main/get.sh | bash
 ```
 
-Then: `gv`, `gtex`, `gv-dict`. **Read [docs/GUIDE.md](docs/GUIDE.md)** (also `:GvGuide`
-inside gv): every key, every template, every alias with examples.
+GaussianVim only (the editor, no LaTeX):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/knight-dwell/gaussianvim/main/get.sh | bash -s -- --vim-only
+```
+
+From a clone: `./install.sh` (everything, `--help` for options) or `./install-gv.sh`
+(GaussianVim only). Then: `gv`, `gtex`, `gv-dict`; **`gv-doctor`** checks the install.
+**Read [docs/GUIDE.md](docs/GUIDE.md)** (also `:GvGuide` inside gv): every key, every
+template, every alias with examples.
+
+### Two looks
+
+**Material** (default): a title bar with rounded buttons, the editor and the PDF in
+rounded cards, a themed file tree, and a Reader window that shows Wikipedia and
+Stack Exchange with typeset equations and figures. **Classic**: the earlier look,
+in your terminal. Switch with `Space u T` in gv or `gv-theme material|classic`;
+install with `--theme classic` to start there.
 
 ## Layout
 
 | In the repo | Installed to |
 |---|---|
-| `config/` | `~/.config/gaussianvim/` |
+| `config/` (Material look), `config-classic/` | `~/.config/gaussianvim/` (a git repo; the looks are its branches) |
 | `share/dictionary/`, `share/brand/` | `~/.local/share/gaussianvim/` |
-| `bin/` (`gv`, `gtex`, `gv-dict`, `vimhelp`) | `~/.local/bin/` |
+| `bin/` (`gv`, `gtex`, `gv-dict`, `vimhelp`, `gv-theme`, `gv-doctor`) | `~/.local/bin/` |
 | `applications/` | `~/.local/share/applications/` |
 
-`./sync.sh` copies the live files of this machine back into the repo before a commit.
+`./sync.sh` copies the live files of this machine (both looks) back into the repo before a commit.
 
 KaTeX (in `share/dictionary/web/katex`) is MIT licensed.

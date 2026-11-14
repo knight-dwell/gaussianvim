@@ -7,11 +7,23 @@
 # ~/.config/gaussianvim (NVIM_APPNAME keeps it apart from `vim` = LunarVim and `nvim`).
 G="$HOME/.local/share/gaussianvim"
 
+# install.sh puts a recent Node here when the system one is too old for the language servers
+[[ -x $G/node/bin/node ]] && PATH="$G/node/bin:$PATH"
+
 # Some language servers (Bash, ...) run on Node. Started from rofi, PATH has no
 # nvm, so add the newest nvm Node when `node` isn't found.
 if ! command -v node >/dev/null 2>&1; then
   n=$(ls -d "$HOME"/.nvm/versions/node/*/bin 2>/dev/null | sort -V | tail -1)
   [[ -n $n ]] && PATH="$n:$PATH"
 fi
+
+# A .tex file opens in the GaussianTeX window (gv + the PDF docked on the right,
+# like Overleaf). GTEX_TERMINAL=1 gv file.tex keeps it in this terminal.
+if [[ -z $GV_DOCK && -z $GTEX_TERMINAL && -z $GV_NO_ROUTE ]]; then
+  for a in "$@"; do
+    if [[ $a == *.tex ]]; then GV_NO_ROUTE=1 exec "$HOME/.local/bin/gtex" "$@"; fi
+  done
+fi
+unset GV_NO_ROUTE
 
 NVIM_APPNAME=gaussianvim exec "$G/nvim/bin/nvim" "$@"

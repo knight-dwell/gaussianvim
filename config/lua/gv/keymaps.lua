@@ -150,6 +150,7 @@ map("n", "<leader>ui", function()
   if Snacks.indent.enabled then Snacks.indent.disable() else Snacks.indent.enable() end
 end, "Indent guides")
 map("n", "<leader>ut", function() require("gv.transparent").toggle() end, "Transparent background")
+map("n", "<leader>uT", function() require("gv.themeswitch").pick() end, "Theme: Material / Classic look")
 map("n", "<leader>uc", function() vim.wo.cursorline = not vim.wo.cursorline end, "Cursor line")
 
 -- Space S: sessions (your dashboard's "Restore")
@@ -174,10 +175,13 @@ map("n", "<C-Right>", "<cmd>vertical resize +2<cr>", "Resize")
 -- quickfix list
 map("n", "]q", "<cmd>cnext<cr>", "Next quickfix item")
 map("n", "[q", "<cmd>cprev<cr>", "Previous quickfix item")
-map("n", "<C-q>", function()
+-- Ctrl+q: hide a panel to the dock / bring the last one back / else the quickfix
+-- list (lua/gv/floatwin.lua); Space u q: the quickfix list always
+map("n", "<leader>uh", function() require("gv.dock").pick() end, "Bring back a hidden panel")
+map("n", "<leader>uq", function()
   local open = vim.iter(vim.fn.getwininfo()):any(function(w) return w.quickfix == 1 end)
   vim.cmd(open and "cclose" or "copen")
-end, "Toggle quickfix list")
+end, "Quickfix list")
 
 -- terminal (LunarVim's toggleterm): Ctrl+\ floating, Alt+1 below, Alt+2 right, Alt+3 floating
 local function term(position)

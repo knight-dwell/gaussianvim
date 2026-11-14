@@ -1,5 +1,6 @@
 -- How GaussianVim looks: Material You colors (lua/gv/material.lua), status
--- line, file tabs, start screen, Space menu.
+-- line, window bar (the file as a chip), file tabs, the file tree as a rounded
+-- card, start screen, Space menu. Space u T switches to the Classic look.
 
 -- A Gaussian drawn with block characters, for the start screen.
 local function bell(width, rows)
@@ -21,6 +22,15 @@ local function not_menu()
   local ft = vim.bo.filetype
   if ft == "gvrun" or ft == "gvrunterm" or ft == "gvrunpill" or ft == "gvrunplot" or ft == "gvrunview" then return false end
   return not (vim.bo.buftype == "nofile" and ({ gvmenu = true, gvscm = true, gitcommit = true })[ft])
+end
+
+-- the file chip in the window bar: icon, name, ● when changed
+local function file_chip()
+  local name = vim.fn.expand("%:t")
+  if name == "" then return "" end
+  local ok, dev = pcall(require, "nvim-web-devicons")
+  local icon = ok and dev.get_icon(name, nil, { default = true }) or ""
+  return icon .. " " .. name .. (vim.bo.modified and " ●" or "") .. (vim.bo.readonly and " \u{f023}" or "")
 end
 
 -- a LaTeX file: the Compile / PDF buttons show in its window bar
@@ -89,14 +99,22 @@ return {
             { "filename", path = 1, symbols = { modified = " ●", readonly = " \u{f023}" }, cond = not_menu },
             { "diagnostics", symbols = { error = "\u{f057} ", warn = "\u{f071} ", info = "\u{f05a} ", hint = "\u{f0335} " } },
           },
-          lualine_x = { { "filetype", cond = not_menu } },
+          lualine_x = {
+            -- the dock: hidden panels (Claude, ...) as buttons; click one to bring it back (lua/gv/dock.lua)
+            { function() return require("gv.dock").status() end, cond = function() return require("gv.dock").visible() end,
+              color = "GvBadge", padding = 0 },
+            -- the PDF pane (gtex window): click to show / hide it (lua/gv/pdfdock.lua)
+            { function() return require("gv.pdfdock").status() end, cond = function() return require("gv.pdfdock").active() end,
+              color = "GvBadge", padding = { left = 1, right = 0 }, on_click = function() require("gv.pdfdock").toggle() end },
+            { "filetype", cond = not_menu },
+          },
           lualine_y = { { "progress", separator = { left = "\u{e0b6}" } } },
           lualine_z = { { "location", separator = { left = "\u{e0b6}", right = "\u{e0b4}" } } },
         },
         -- breadcrumbs at the top of each window, as in LunarVim: file  class  function
         winbar = {
           lualine_c = {
-            { "filename", path = 0, symbols = { modified = " ●", readonly = " \u{f023}" } },
+            { file_chip, color = "GvWinbarFile", separator = { left = "\u{e0b6}", right = "\u{e0b4}" } },
             {
               function() return require("nvim-navic").get_location() end,
               cond = function() return package.loaded["nvim-navic"] and require("nvim-navic").is_available() end,
@@ -132,7 +150,9 @@ return {
             },
           },
         },
-        inactive_winbar = { lualine_c = { { "filename", path = 0 } } },
+        inactive_winbar = { lualine_c = {
+          { file_chip, color = "GvWinbarFileNC", separator = { left = "\u{e0b6}", right = "\u{e0b4}" } },
+        } },
       }
     end,
   },
@@ -215,7 +235,34 @@ return {
           { section = "startup" },
         },
       },
-      picker = { enabled = true, layout = { preset = "default" } },
+      picker = {
+        enabled = true,
+        layout = { preset = "default" },
+        icons = { tree = { vertical = "│ ", middle = "├╴", last = "╰╴" } },
+        sources = {
+          -- the file tree (Space e): a rounded card on the left with its own colors (lua/gv/material.lua)
+          explorer = {
+            layout = {
+              preview = false,
+              layout = {
+                backdrop = false, width = 34, min_width = 30, height = 0, position = "left",
+                border = "none", box = "vertical",
+                { win = "input", height = 1, border = "rounded", title = " \u{f0349} {title} {live} {flags}", title_pos = "left" },
+                { win = "list", border = "rounded", title = " \u{f024b}  Files ", title_pos = "center" },
+              },
+            },
+            win = {
+              list = { wo = { winhighlight = "Normal:GvExplorer,NormalNC:GvExplorer,FloatBorder:GvExplorerBorder,"
+                .. "FloatTitle:GvExplorerTitle,CursorLine:GvExplorerCursor,SnacksPickerListCursorLine:GvExplorerCursor,"
+                .. "SnacksPickerBorder:GvExplorerBorder,SnacksPickerListBorder:GvExplorerBorder,SnacksPickerTitle:GvExplorerTitle,"
+                .. "SnacksPickerListTitle:GvExplorerTitle,SnacksPickerList:GvExplorer,WinSeparator:GvExplorerBorder" } },
+              input = { wo = { winhighlight = "Normal:GvExplorerInput,NormalNC:GvExplorerInput,FloatBorder:GvExplorerInputBorder,"
+                .. "FloatTitle:GvExplorerTitle,SnacksPickerInput:GvExplorerInput,SnacksPickerInputBorder:GvExplorerInputBorder,"
+                .. "SnacksPickerInputTitle:GvExplorerTitle,SnacksPickerBorder:GvExplorerInputBorder" } },
+            },
+          },
+        },
+      },
       explorer = { enabled = true },
       -- pictures and $maths$ drawn inside Markdown files (kitty); not in .tex files (lua/gv/tex.lua)
       image = {

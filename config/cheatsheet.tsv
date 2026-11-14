@@ -217,3 +217,19 @@ latex	Space l F  or  the ⚡ button	fast mode: typeset only the chapter you are 
 latex	Space l Q	full-quality PDF from your original figures (everyday compiles use print-resolution copies in .gvfast, your files untouched)	final quality print figures images resolution submit
 docs	Space s w	Wikipedia: online + the offline physics and maths Wikipedia; articles with typeset maths, Enter follows a link, t jumps to a section, q goes back	wikipedia encyclopedia article wiki definition explain concept offline
 docs	:GvWiki install	download the offline physics + maths Wikipedia (~650 MB, Kiwix)	wikipedia offline download kiwix zim
+look	Space u T  or  :GvTheme	switch GaussianVim's look: Material (title bar with buttons, rounded editor and file tree, rendered Wikipedia reader) or Classic (the look before); gv restarts on the same file	theme look style material classic switch appearance skin
+look	gv-theme material  /  gv-theme classic	the same switch from a terminal (also sets the app-menu launchers); gv-theme alone says which is active	theme terminal command look switch
+latex	Space l h  or  Ctrl+Shift+P	(GaussianTeX window) fold the PDF pane away / bring it back; also the hide button above the PDF and the PDF tab at the right edge	pdf hide show fold pane panel
+latex	Ctrl+Shift+Left / Ctrl+Shift+Right	(GaussianTeX window) PDF wider / narrower; or drag the divider, or the 35% / 50% / 70% buttons (the width is remembered)	pdf width resize wider narrower size
+copy	Ctrl+Shift+C / Ctrl+Shift+V	(GaussianTeX / GaussianVim window) copy the selection / paste; Shift+drag selects anything on screen	copy paste clipboard window
+latex	Space l B  or  the Backup button	backups of the LaTeX project: back up now, restore (into a new folder, or over the project), auto backup on save (every 10 min, 30 kept), previous version of this file, gv config snapshots and history	backup restore history snapshot zip save version undo
+latex	gv file.tex	a .tex file opens in the GaussianTeX window (gv + the PDF); GTEX_TERMINAL=1 gv file.tex keeps it in the terminal	open tex window terminal
+windows	drag the title bar / edges of a panel	move / resize a floating panel (Claude, docs, wiki, answers, terminal); a mouse selection in it is copied	move resize panel float window drag mouse
+windows	Alt+arrows  /  Alt+Shift+arrows	move a floating panel / make it narrower, wider, shorter, taller	move resize panel float window
+windows	Alt+=  /  Alt+-  /  Alt+m	floating panel bigger / smaller / fill the screen and back	resize zoom maximize panel float
+windows	Ctrl+q	in a panel: hide it to the dock (bottom right of the status line, click to bring it back); in the editor: bring back the last hidden panel	hide dock minimize panel restore
+windows	Space u h	pick a hidden panel from the dock	dock hidden panel restore bring back
+docs	p  (in a Wikipedia / Stack Exchange reader)	the rendered Reader window: equations typeset and figures shown (opens by itself where the terminal can't draw pictures, e.g. the GaussianTeX window); Backspace back, o browser, q close, Ctrl +/- zoom	reader maths equations figures images render pictures wikipedia stack exchange
+files	the Files / Find buttons (title bar)	(GaussianTeX / GaussianVim window) the file tree (Space e) / find a file (Space f)	files tree explorer find button title bar
+misc	gv-doctor	(terminal) check that everything gv / GaussianTeX needs is installed: ✓ / ✗ / optional, with what each part is for	install check doctor missing dependencies broken setup
+misc	./install.sh  /  ./install-gv.sh	(in ~/gaussianvim) install or update everything / GaussianVim only, with all dependencies; on a new computer: curl -fsSL https://raw.githubusercontent.com/knight-dwell/gaussianvim/main/get.sh | bash	install update setup new computer dependencies

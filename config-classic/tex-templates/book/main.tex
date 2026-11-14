@@ -1,0 +1,30 @@
+% {{TITLE}}: a book. Chapters are in chapters/.
+\documentclass[11pt,a4paper,openany]{book}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage[colorlinks,allcolors=blue]{hyperref}
+\graphicspath{{figures/}}
+
+\title{{{TITLE}}}
+\author{{{AUTHOR}}}
+\date{\today}
+
+\begin{document}
+\frontmatter
+\maketitle
+\tableofcontents
+\chapter{Preface}
+Why this book.
+
+\mainmatter
+\include{chapters/chapter1}
+\include{chapters/chapter2}
+
+\appendix
+\include{chapters/appendix}
+
+\backmatter
+\bibliographystyle{unsrt}
+\bibliography{references}
+\end{document}

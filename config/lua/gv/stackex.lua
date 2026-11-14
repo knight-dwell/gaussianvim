@@ -82,6 +82,20 @@ local function md(html, with_math)
   return vim.split(text, "\n")
 end
 
+-- the question and its answers as one HTML page for the rendered reader
+local function reader_html(site, q, answers)
+  local parts = { q.body or "", ("<div class=\"gvmeta\">score %d · %d answers</div>"):format(q.score, q.answer_count) }
+  for _, a in ipairs(answers) do
+    parts[#parts + 1] = ("<div class=\"gvpost\"><div class=\"gvmeta%s\">Answer · score %d%s</div>%s</div>")
+      :format(a.is_accepted and " ok" or "", a.score, a.is_accepted and " · ✓ accepted" or "", a.body or "")
+  end
+  local dir = vim.fn.stdpath("cache") .. "/reader"
+  vim.fn.mkdir(dir, "p")
+  local file = ("%s/%s-%d.html"):format(dir, site, q.question_id)
+  vim.fn.writefile(vim.split(table.concat(parts, "\n"), "\n"), file)
+  return { "html", file, unhtml(q.title), q.link }
+end
+
 -- the question and its top answers in a reading window
 local function open_question(site, q)
   get(("%s/questions/%d/answers?order=desc&sort=votes&site=%s&filter=withbody&pagesize=4"):format(API, q.question_id, site), function(data)
@@ -99,8 +113,11 @@ local function open_question(site, q)
     local win = vim.api.nvim_open_win(buf, true, {
       relative = "editor", row = 2, col = math.floor((vim.o.columns - w) / 2), width = w, height = vim.o.lines - 6,
       border = "rounded", style = "minimal", title = { { " " .. site .. " ", "FloatTitle" } },
-      footer = { { " q back to the results · Q close · o open in browser ", "FloatFooter" } }, footer_pos = "right",
+      footer = { { " q back to the results · Q close · p rendered · o open in browser ", "FloatFooter" } }, footer_pos = "right",
     })
+    local rargs = reader_html(site, q, data.items or {})
+    require("gv.reader").auto(rargs)
+    vim.keymap.set("n", "p", function() require("gv.reader").open(rargs) end, { buffer = buf, nowait = true })
     vim.wo[win].wrap, vim.wo[win].linebreak, vim.wo[win].conceallevel = true, true, 2
     -- q / Backspace: back to the list of results, where you were; Q / Esc: close
     for _, k in ipairs({ "q", "<BS>" }) do

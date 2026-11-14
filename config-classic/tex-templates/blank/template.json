@@ -1,0 +1,6 @@
+{
+  "name": "Blank article",
+  "description": "a minimal article: title, one section, maths and graphics packages loaded",
+  "main": "main.tex",
+  "order": 8
+}

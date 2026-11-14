@@ -1,0 +1,50 @@
+% {{TITLE}}: Physical Review B article (REVTeX 4.2). For a single-column
+% preprint replace "reprint" by "preprint" below.
+\documentclass[aps,prb,reprint,superscriptaddress,amsmath,amssymb]{revtex4-2}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage[colorlinks,allcolors=blue]{hyperref}
+
+\begin{document}
+
+\title{{{TITLE}}}
+
+\author{{{AUTHOR}}}
+\email{your.email@institute.edu}
+\affiliation{Theoretical Sciences Unit, Jawaharlal Nehru Centre for Advanced Scientific Research, Bangalore 560064, India}
+
+\date{\today}
+
+\begin{abstract}
+One paragraph: the problem, what you did, what you found.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+Why the problem matters~\cite{hubbard1963,gutzwiller1963}.
+
+\section{Model and method}
+\begin{equation}
+  H = -t \sum_{\langle i,j \rangle, \sigma} c^\dagger_{i\sigma} c_{j\sigma} + U \sum_i n_{i\uparrow} n_{i\downarrow}
+  \label{eq:hamiltonian}
+\end{equation}
+
+\section{Results}
+% \begin{figure}[t]
+%   \includegraphics[width=\columnwidth]{figures/fig1}
+%   \caption{Caption.}
+%   \label{fig:1}
+% \end{figure}
+
+\section{Conclusion}
+
+\begin{acknowledgments}
+We thank ...
+\end{acknowledgments}
+
+\appendix
+\section{Details}
+
+\bibliography{references}
+\end{document}

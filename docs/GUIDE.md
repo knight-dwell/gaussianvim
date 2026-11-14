@@ -27,6 +27,7 @@ Press Space and wait to see a menu of everything under it.
 9. [Installing on another computer (Ubuntu)](#9-installing-on-another-computer-ubuntu)
 10. [Updating the repo](#10-updating-the-repo)
 11. [Where things live](#11-where-things-live)
+12. [The look: Material or Classic](#12-the-look-material-or-classic)
 
 ---
 
@@ -37,11 +38,27 @@ Press Space and wait to see a menu of everything under it.
 | `gv` or `gv file.py` | GaussianVim (also "GaussianVim" in the app menu) |
 | `gtex` | GaussianTeX: the LaTeX project menu (also the "GaussianTeX" app) |
 | `gtex new` | straight to "choose a template" |
+| `gv file.tex` | a .tex file opens in the GaussianTeX window (gv + the PDF); `GTEX_TERMINAL=1 gv file.tex` keeps it in the terminal |
 | `gv-dict` / **Super+?** | the Dictionary of every key and alias |
 | `vimhelp delete line` | the same, in the terminal |
 
 On the start screen: `f` find a file, `r` recent files, `t` LaTeX projects,
 `?` the Dictionary, `s` restore your last session.
+
+### The window
+
+`gtex` (and, in the Material look, the GaussianVim app) opens its own window:
+gv on the left, the PDF on the right. In the **Material** look the title bar
+holds the buttons as rounded pills (**▶ Compile**, **Files**, **Find**,
+**Copy / Paste**, **Backup**, the PDF width **35% / 50% / 70%** and **Show PDF**)
+and gv and the PDF sit in rounded cards. GaussianVim's window shows only Files,
+Find, Copy and Paste until a PDF is open.
+
+| Key | Does |
+|---|---|
+| `Ctrl+Shift+P` / `Space l h` | fold the PDF away / bring it back (also the PDF tab at the right edge) |
+| `Ctrl+Shift+Left` / `Right` | PDF wider / narrower (or drag the divider; the width is remembered) |
+| `Ctrl+Shift+C` / `Ctrl+Shift+V` | copy the selection / paste (`Shift+drag` selects anything on screen) |
 
 ## 2. Editing basics
 
@@ -67,6 +84,13 @@ Vim has modes. You start in **normal mode** (keys are commands); `i` goes to
 | `Space l a` / `gl` | quick fix / full message for the error on this line |
 | `Space g m` | git menu (commit, push, pull, branches); `Space G` the Source Control card |
 | `Ctrl+\` | floating terminal (again to hide); `Esc Esc` inside it to scroll |
+
+**Floating panels** (Claude, docs, Wikipedia, answers, terminals) can be moved
+and resized: drag the title bar or the edges, or `Alt+arrows` (move),
+`Alt+Shift+arrows` (size), `Alt+=` / `Alt+-` (bigger / smaller), `Alt+m` (fill
+the screen). **`Ctrl+q`** hides a panel to the **dock** (bottom right of the
+status line); click it there, `Ctrl+q` in the editor, or `Space u h` brings it
+back where it was. Selecting text in a panel with the mouse copies it.
 
 ## 3. Running code (F5) and plots
 
@@ -120,7 +144,7 @@ Ubuntu), the search box starts with the error on your line (or your selection).
 Up to 100 results show at once; the last line, **Load more results…**, fetches
 the next 100. Enter reads the question with its best answers inside gv, with the maths
 typeset (Physics and Mathematics); `q` goes back to the results, `Q` closes,
-`o` opens it in the browser.
+`o` opens it in the browser, `p` the rendered Reader (below).
 
 ### Wikipedia
 
@@ -129,7 +153,22 @@ Online results come from en.wikipedia.org; the **offline physics and maths
 Wikipedia** (Kiwix, ~650 MB, `:GvWiki install`) answers too, and alone when
 there is no internet. Articles open with the maths typeset: **Enter** on a link
 opens that article, **t** lists the sections to jump to, **q** goes back,
-**o** opens it in the browser.
+**o** opens it in the browser, **p** the rendered Reader.
+
+### The Reader: equations and figures (Material look)
+
+gv can draw equations and pictures only in **kitty**. Everywhere else (the
+GaussianTeX / GaussianVim window, gnome-terminal) a Wikipedia article or a
+Stack Exchange question also opens in the **Reader**: a window with the
+equations typeset and the figures shown, in gv's colours. In kitty press `p`
+in the text reader to open it.
+
+- Links to other Wikipedia articles open in the Reader; other links in the browser.
+- `Backspace` / `Alt+Left` back, `Alt+Right` forward, `j` `k` scroll,
+  `Ctrl +` / `Ctrl -` / `Ctrl 0` zoom, `o` the browser, `q` / `Esc` close.
+- Offline Wikipedia has equations but no pictures (the Kiwix files are the
+  "nopic" edition); online articles have both. Stack Exchange maths needs the
+  internet (MathJax).
 
 ### Claude
 
@@ -153,7 +192,8 @@ use the key again. Claude Code must be installed and logged in once
 ### Maths in Markdown
 
 In any Markdown file (`.md` notes, the docs and Stack Exchange readers),
-`$...$` and `$$...$$` are drawn as typeset equations in kitty, and so are
+`$...$` and `$$...$$` are drawn as typeset equations in kitty (only there:
+other terminals show the LaTeX source), and so are
 `![](picture.png)` links. Move the cursor onto an equation to edit its source.
 `.tex` files are never drawn over: there you see your LaTeX.
 
@@ -186,6 +226,19 @@ left; **`U`** uploads files into the folder under the cursor (a file chooser
 opens in Downloads); `P` previews figures. **`Space l z`** exports the project
 as `~/Downloads/<name>.zip` without build files, for Overleaf, a journal or a
 colleague.
+
+### Backups
+
+**`Space l B`** (or the **Backup** button) is the backup menu:
+
+- **Back up now**: a .zip of the project (sources, figures, the PDF; no build
+  files) in `~/GaussianTeX-backups/<project>/`.
+- **Auto backup**: on save, at most every 10 minutes; the newest 30 are kept.
+- **Restore…**: newest first; unpack into a new folder next to the project
+  (safe) or over the project (the current state is backed up first).
+- **Previous version of this file**: every file keeps its last version on save.
+- **gv config**: snapshots of `~/.config/gaussianvim` (daily, 15 kept) and its
+  git history; any change can be undone.
 
 ## 6. GaussianTeX: writing
 
@@ -330,35 +383,49 @@ Dictionary by themselves.
 - "⚠ Compiled with warnings" means the PDF is there but e.g. BibTeX complained
   (duplicate entries): click it for the list.
 
-## 9. Installing on another computer (Ubuntu)
+## 9. Installing on another computer
 
-The repo is public (github.com/knight-dwell/gaussianvim). On any computer:
+Works on a fresh Linux (Ubuntu / Debian / Mint, Fedora, Arch / Manjaro, openSUSE;
+x86_64 or arm64); the installer brings every dependency itself. One line, from
+nothing (it installs git, downloads the repo to `~/gaussianvim`, runs the installer):
 
 ```bash
-sudo apt install -y git
-git clone https://github.com/knight-dwell/gaussianvim ~/gaussianvim
-cd ~/gaussianvim && ./install.sh
+curl -fsSL https://raw.githubusercontent.com/knight-dwell/gaussianvim/main/get.sh | bash
 ```
 
-`install.sh` installs everything (Neovim 0.12, TeX Live for the templates,
-zathura, Python with NumPy/SciPy/Matplotlib, kitty, a Nerd Font, the language
-servers, the offline docs, and offers Claude Code), copies GaussianVim and
-GaussianTeX, adds the app-menu entries and, on GNOME, Super+? for the
-Dictionary. Options: `--no-tex` (skip TeX Live), `--no-docs`, `--no-claude`,
-`--no-system` (no sudo: only GaussianVim itself), `--yes` (ask nothing).
-It also works on Fedora (dnf) and Arch (pacman). Run it again to update.
+Only the editor (GaussianVim, no LaTeX, ~1 GB less):
 
-Then open a new terminal: `gv`, `gtex`, `gv-dict`. Plots inside the run card
-need the **kitty** terminal (the installer gives it the font).
+```bash
+curl -fsSL https://raw.githubusercontent.com/knight-dwell/gaussianvim/main/get.sh | bash -s -- --vim-only
+```
 
+Or from a clone: `./install.sh` (everything) or `./install-gv.sh` (GaussianVim only).
+
+| It installs | |
+|---|---|
+| system packages | git, ripgrep, fd, compilers (gcc, gfortran), Python with NumPy / SciPy / Matplotlib, GTK + VTE + WebKit (the window and the Reader), pandoc, poppler, kitty, clipboard tools; with LaTeX: TeX Live (revtex, nature, …), latexmk, zathura. Names a release doesn't have are skipped, not fatal |
+| its own Neovim 0.12 | in `~/.local/share/gaussianvim`, never touching a Vim / Neovim you have |
+| its own Node 22 | only when the system Node is missing or older than 18 (Ubuntu 22.04 ships 12) |
+| the rest | a Nerd Font, plugins, language servers, offline docs, offline Wikipedia (not with `--vim-only`), Claude Code (asks), Super+? for the Dictionary on GNOME |
+
+Options: `--vim-only`, `--theme classic` (start with the Classic look), `--no-tex`,
+`--no-docs`, `--no-wiki`, `--no-claude`, `--no-system` (no sudo: only GaussianVim
+itself), `--yes` (ask nothing). Run it again to update: your config changes are
+committed to its git history first, and the look you use is kept.
+
+Afterwards **`gv-doctor`** lists every part as ✓ / ✗ / ○ (optional) with what it
+is for; run the installer again for anything missing. Open a new terminal, then:
+`gv`, `gtex`, `gv-dict`. Plots inside the run card and equations in Markdown need
+the **kitty** terminal; the window and the Reader need a desktop (X11, or Wayland
+through XWayland).
 
 ## 10. Updating the repo
 
 After changing things on your laptop:
 
 ```bash
-cd ~/Projects/gaussianvim
-./sync.sh                         # copies the live files into the repo
+cd ~/gaussianvim
+./sync.sh                         # copies the live files into the repo (both looks; run it in the Material look)
 git add -A && git commit -m "what changed" && git push
 ```
 
@@ -370,6 +437,30 @@ On the lab computer: `git pull && ./install.sh`.
 |---|---|
 | `~/.config/gaussianvim/` | the config: `lua/gv/*.lua`, `cheatsheet.tsv` (Dictionary entries), `snippets/tex.json`, `tex-auto.json`, `tex-templates/` |
 | `~/.local/share/gaussianvim/` | Neovim itself, plugins, language servers, `docs/`, the Dictionary app |
-| `~/.local/bin/` | `gv`, `gtex`, `gv-dict`, `vimhelp` |
+| `~/.local/bin/` | `gv`, `gtex`, `gv-dict`, `vimhelp`, `gv-theme`, `gv-doctor` |
+| `~/.config/gaussianvim/runner/` | the windows: `gvwindow.py` (GaussianTeX / GaussianVim), `gvreader.py` (the Reader), `gvtheme.py` (their colours) |
+| `~/GaussianTeX-backups/` | project backups and gv config snapshots |
 | `~/GaussianTeX/` | your LaTeX projects |
-| `~/Projects/gaussianvim/` | this repo |
+| `~/gaussianvim/` | the repo (`install.sh`, `install-gv.sh`, `get.sh`, `sync.sh`) |
+
+## 12. The look: Material or Classic
+
+GaussianVim has two looks, kept apart as two git branches of the config
+(`material` and `classic` in `~/.config/gaussianvim`):
+
+| | Material | Classic |
+|---|---|---|
+| title bar | dark, with the buttons as rounded pills | the desktop's title bar, a toolbar below it |
+| editor / PDF | rounded cards | edge to edge |
+| file tree (`Space e`) | a rounded card: folders in the accent colour, git state in colour, rounded branches | plain sidebar |
+| top of each file | the file name as a chip with its icon | the file name |
+| Wikipedia / Stack Exchange | equations and figures in the Reader | equations only in kitty |
+| GaussianVim app | opens in the window | opens in kitty |
+
+**Switch**: `Space u T` (or `:GvTheme material` / `:GvTheme classic`) inside gv;
+gv saves everything and offers to restart on the same file. From a terminal:
+`gv-theme material`, `gv-theme classic`, or `gv-theme` to see which is active
+(it also sets the app-menu launchers). Changes you make to the config are saved
+on the branch you're on; settings both looks share (keys, aliases) have to be
+added to both branches.
+

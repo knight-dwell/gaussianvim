@@ -156,6 +156,34 @@ function M.on_highlights(hl)
   hl.GitSignsChange = { fg = p.blue }
   hl.GitSignsDelete = { fg = p.red }
 
+  -- file tree (Space e): its own raised sidebar card, folders in the primary color,
+  -- git state as colored letters, the cursor row as a primary pill
+  local side = mix(p.bg, p.bg_low, 0.85)
+  hl.GvExplorer = { bg = side, fg = p.fg_dim }
+  hl.GvExplorerBorder = { bg = p.bg, fg = mix(p.bg, p.outline_variant, 0.8) }
+  hl.GvExplorerTitle = { bg = p.primary, fg = p.on_primary, bold = true }
+  hl.GvExplorerInput = { bg = p.bg_high, fg = p.fg }
+  hl.GvExplorerInputBorder = { bg = p.bg, fg = p.bg_highest }
+  hl.GvExplorerCursor = { bg = p.primary_container, fg = p.on_primary_container, bold = true }
+  hl.SnacksPickerDirectory = { fg = p.primary, bold = true }
+  hl.SnacksPickerDir = { fg = p.outline }
+  hl.SnacksPickerFile = { fg = p.fg }
+  hl.SnacksPickerTree = { fg = mix(p.bg, p.outline_variant, 0.8) }
+  hl.SnacksPickerPathHidden = { fg = p.outline }
+  hl.SnacksPickerPathIgnored = { fg = p.outline_variant, italic = true }
+  hl.SnacksPickerGitStatusModified = { fg = p.yellow, bold = true }
+  hl.SnacksPickerGitStatusAdded = { fg = p.green, bold = true }
+  hl.SnacksPickerGitStatusUntracked = { fg = p.cyan, bold = true }
+  hl.SnacksPickerGitStatusDeleted = { fg = p.red, bold = true }
+  hl.SnacksPickerGitStatusRenamed = { fg = p.tertiary, bold = true }
+  hl.SnacksPickerGitStatusStaged = { fg = p.green_b, bold = true }
+  hl.SnacksPickerGitStatusIgnored = { fg = p.outline_variant }
+  hl.Directory = { fg = p.primary, bold = true }
+
+  -- the bar at the top of each window: the file as a chip, then the breadcrumbs
+  hl.GvWinbarFile = { bg = p.primary_container, fg = p.on_primary_container, bold = true }
+  hl.GvWinbarFileNC = { bg = p.bg_high, fg = p.fg_dim }
+
   -- breadcrumbs
   hl.NavicText = { fg = p.fg_dim }
   hl.NavicSeparator = { fg = p.outline_variant }

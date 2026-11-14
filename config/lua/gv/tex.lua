@@ -315,7 +315,8 @@ function M.compile()
   if vim.b.vimtex == nil then return notify("Open the .tex file first (vimtex isn't active here)") end
   if not vim.uv.fs_stat(project_root_dir() .. "/.gvfast") and not is_running() then
     notify("Preparing the figures once (big pictures at print resolution, your files untouched)…")
-    return M.figure_cache(function() M.compile() end)
+    -- the cache folder may stay absent (no big pictures): make it so this doesn't loop forever
+    return M.figure_cache(function() vim.fn.mkdir(project_root_dir() .. "/.gvfast", "p"); M.compile() end)
   end
   local modified = vim.bo.modified
   if modified then vim.cmd("silent write") end
@@ -346,12 +347,20 @@ function M.view()
     notify("No PDF yet: compiling first (it opens when done)")
     return M.compile()
   end
+  -- in the GaussianTeX window (gtex): the PDF pane on the right (lua/gv/pdfdock.lua)
+  local dock = require("gv.pdfdock")
+  if dock.active() and dock.view() then return end
+  if dock.window_available() then
+    return dock.ask_plain(function() vim.cmd("VimtexView") end)
+  end
   vim.cmd("VimtexView")
 end
 
 function M.errors()
   if #vim.fn.getqflist() == 0 then return notify("No errors or warnings") end
-  Snacks.picker.qflist({ title = "LaTeX errors and warnings" })
+  -- a small panel along the bottom (Enter jumps to the line, q closes it)
+  vim.cmd("botright copen " .. math.min(8, math.max(3, #vim.fn.getqflist())))
+  vim.keymap.set("n", "q", "<cmd>cclose<cr>", { buffer = 0, nowait = true, desc = "Close the error panel" })
 end
 
 -- what the button at the top right says and does

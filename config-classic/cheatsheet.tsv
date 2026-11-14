@@ -1,0 +1,233 @@
+# GaussianVim cheat sheet: category <TAB> keys <TAB> what it does
+# Shown by Space ? inside gv, and by `vimhelp [word]` in any terminal. Add your own lines.
+modes	i	insert before the cursor	type write edit insert
+modes	a	insert after the cursor
+modes	I	insert at the start of the line
+modes	A	insert at the end of the line
+modes	o	new line below and insert
+modes	O	new line above and insert
+modes	Esc  or  jk	back to normal mode	leave stop typing normal
+modes	v	select characters (visual mode)
+modes	V	select whole lines
+modes	Ctrl+v	select a block / column
+modes	:	type a command (save, quit, replace ...)	command line ex
+move	h j k l	left, down, up, right
+move	w / b	next / previous word
+move	e	end of the word
+move	0	start of the line
+move	^	first non-blank character of the line
+move	$	end of the line
+move	gg	top of the file	beginning start first line top
+move	G	bottom of the file	end last line bottom
+move	42G  or  :42	go to line 42	line number goto jump
+move	Ctrl+d / Ctrl+u	half a page down / up
+move	%	jump to the matching bracket	parenthesis brace bracket pair
+move	f x	jump to the next x on this line (; repeats)
+move	t x	jump to just before the next x
+move	{ / }	previous / next paragraph or blank line
+move	H / M / L	top / middle / bottom of the screen
+move	zz	scroll so the cursor line is in the middle
+move	Ctrl+o / Ctrl+i	go back / forward to where you were	back previous location history
+move	gd	go to where this function / variable is defined
+move	gr	list where it is used
+move	K	show the docs of the word under the cursor
+delete	x	delete one character	remove erase letter
+delete	dd	delete (cut) the line	remove erase cut line
+delete	5dd	delete 5 lines
+delete	dw	delete to the end of the word
+delete	diw	delete the word under the cursor	remove erase word
+delete	D	delete to the end of the line
+delete	d0	delete to the start of the line
+delete	dG	delete to the end of the file
+delete	dgg	delete to the top of the file
+delete	di(	delete everything inside ( )
+delete	da"	delete a "string" including the quotes
+change	cw	change (replace) to the end of the word
+change	ciw	change the whole word under the cursor
+change	ci(	change everything inside ( )
+change	ci"	change the text inside " "
+change	cc	change the whole line
+change	C	change to the end of the line
+change	r x	replace one character with x
+change	R	overwrite mode (type over text)
+change	~	swap upper / lower case	capital uppercase lowercase case
+change	gUiw / guiw	word to UPPER / lower case
+change	J	join the next line onto this one
+change	>> / <<	indent / unindent the line	tab indent shift
+change	.	repeat the last change	again repeat redo last
+copy	yy	copy (yank) the line	duplicate line yank
+copy	yiw	copy the word
+copy	y$	copy to the end of the line
+copy	p / P	paste after / before the cursor	put insert
+copy	"+y	copy to the system clipboard (gv does this already)	clipboard system outside
+copy	"0p	paste what you last copied (not what you deleted)
+undo	u	undo	revert mistake back
+undo	Ctrl+r	redo	redo forward again
+undo	U	undo all changes on the line
+search	/word	search forward for word	find look locate
+search	?word	search backward
+search	n / N	next / previous match
+search	*	search for the word under the cursor	find same word
+search	Space h	clear the search highlight
+replace	:s/old/new/	replace the first old on this line
+replace	:s/old/new/g	replace every old on this line
+replace	:%s/old/new/g	replace everywhere in the file	substitute find and replace all whole file rename
+replace	:%s/old/new/gc	replace everywhere, asking each time
+replace	:'<,'>s/old/new/g	replace inside the selection (press : in visual mode)
+select	vip	select the paragraph	paragraph block
+select	viw	select the word
+select	vi(	select inside ( )
+select	ggVG	select the whole file	all everything
+select	gv	reselect the last selection
+select	o	(in visual mode) jump to the other end of the selection
+select	Ctrl+v, select, I, type, Esc	type the same text on many lines
+files	:w  or  Space w  or  Ctrl+s	save	save write store
+files	:q  or  Space q	quit this window	quit exit close
+files	:wq  or  :x	save and quit
+files	:q!	quit without saving	discard quit force
+files	:qa	quit everything
+files	:e file.py	open a file
+files	Space f	find a file by name (in this project)	find open file name search
+files	Space sr	recent files
+files	Space st	search text in the whole project	grep find text project search everywhere
+files	Space e	file tree	explorer tree folder sidebar files
+files	:saveas name	save under a new name
+buffers	Shift+l / Shift+h	next / previous open file (tab at the top)	tab next file switch
+buffers	Space c	close this file
+buffers	Space bf  or  Space bj	pick an open file from a list / jump by letter
+buffers	Space bh / Space bl	close all files to the left / right
+windows	|  or  :vsp	split side by side	vertical split side by side pane
+windows	-  or  :sp	split top / bottom	horizontal split pane
+windows	Ctrl+h j k l	move between splits
+windows	Ctrl+w o	keep only this split
+windows	Ctrl+w =	make all splits the same size
+windows	Ctrl+arrows	resize the split
+code	Space la	quick fix for the error on this line	fix error quick fix code action
+code	Space lr	rename a variable / function everywhere	rename variable function refactor
+code	Space lf	format the file	format tidy indent prettify black ruff
+code	gl	show this line's full error message	error message diagnostic problem
+code	Space lj / Space lk	next / previous error
+code	Space ld	list all errors in the file (Space lw: all open files)
+code	Space ls	list functions and classes in the file
+code	Space /  or  gcc	comment / uncomment the line	comment uncomment toggle hash
+code	gc (in visual)	comment the selection
+code	Tab / Shift+Tab  or  Ctrl+j / Ctrl+k	move through the completion menu
+code	Enter	accept the completion
+code	Ctrl+Space	open the completion menu
+code	gs	show the arguments of the function under the cursor
+code	Alt+j / Alt+k	move the line (or selection) down / up
+git	Alt+G	git menu (dropdown), from anywhere in gv
+git	Alt+Shift+G	Source Control card
+git	Space G	Source Control card (like VS Code): commit box, Commit / Sync buttons, changed files	commit push version control source
+git	Space gm  or  click the branch name	git menu above the status bar: commit, sync, push, pull, branches, history, files
+git	click the +/~ counts	(status bar) opens the Source Control card
+git	in the card: c, then type, Enter	write the commit message and commit
+git	in the card: s / u / x / d	stage / unstage / discard / diff the file under the cursor
+git	in the card: S / P / p	sync (pull + push) / push / pull
+git	right-click	menu: Git menu, Source control, Who wrote this line, File tree, Cheat sheet
+git	Space gj / Space gk	next / previous changed block
+git	Space gp	preview the change
+git	Space gr	undo this change
+git	Space gl	who wrote this line (blame)	blame author who
+git	Space go	changed files (git status)
+marks	m a	set mark a here
+marks	' a	jump back to mark a
+marks	''	jump back to where you were before the last jump
+macros	q a	start recording macro a (q again to stop)
+macros	@a	play macro a
+macros	@@	play the last macro again
+macros	10@a	play macro a 10 times
+folds	za	open / close the fold under the cursor
+folds	zR / zM	open / close every fold
+misc	:noh	clear search highlight
+misc	:set wrap	wrap long lines (Space uw toggles)
+misc	:sort	sort the selected lines
+misc	Ctrl+a / Ctrl+x	add / subtract 1 from the number under the cursor
+misc	:!cmd	run a shell command
+misc	:r !cmd	insert a shell command's output
+misc	:Lazy	plugins (update with U)
+misc	:Mason	language servers
+run	F5  or  Space r r	run the file (saves first): a card on the right with the output, results, files and plots	run execute start python program script compile
+run	Ctrl+C  /  Ctrl+Z  /  Shift+F5	stop the running program (like Ctrl+C in a terminal: Python shows the line it was on; killed if it is still going 2 s later, or press again)	stop kill interrupt cancel abort halt program
+run	Space r a	run with arguments (remembered per file)
+run	Space r p	hide the card to a small status pill / show it again (click the pill too)
+run	Space r o	type into the running program (input())
+run	Space r ]  /  Space r [	next / previous plot or file in the card's viewer (also ] [ inside the card)	next previous plot figure file
+run	Space r z	zoom the plot inside the card (wheel / + - zoom, hjkl or drag move, 0 fit)	zoom magnify enlarge plot figure
+run	Space r w	open the plot as a real matplotlib window (toolbar: zoom / pan / save)
+run	Space r c	clear the plots from the card
+run	Space r f	go to the viewer: plot, picture or data file (h l switch, Enter opens)
+run	Space r q  or  Q (in the card)	close the run card completely (q only hides it to the pill)
+run	Space r i	Python console with the file run first (inspect variables)	console repl interactive ipython variables
+run	j k / click (in Results)	show that plot or file (csv / dat / txt as a table) in the viewer
+run	Enter (in Results)	open it: a data file in the editor, a plot to zoom; or jump to the error line
+run	o (in the card)	open the plot / file with its own app
+latex	(automatic in .tex)	spell check as you type: wrong words get a red wavy underline (not maths, labels or % comments)
+latex	z=	suggestions for what's under the cursor: the grammar fix, or spelling (a menu; 1-9 picks)	spelling grammar fix correct suggestion typo
+latex	]s  /  [s	next / previous misspelled word
+latex	zg  /  zw	add the word to your dictionary / mark it as wrong
+latex	(automatic in .tex)	grammar check (LanguageTool): mistakes underlined a few seconds after you stop typing
+latex	(rest the cursor on a grammar mark)	the correction shows under it, e.g. could of → could have
+latex	gl  /  Space l a	what is wrong on this line / fix it (also: disable rule, hide false positive)
+latex	Space l p	rephrase the paragraph (visual mode: the selection) with the local Qwen; Enter puts it in, s shorter, g grammar only, f formal, r again	rephrase rewrite paraphrase reword improve ai qwen
+latex	Space e  or  the Files button	the project's files on the left (Overleaf's panel): U uploads files, a new, r rename, d delete, P preview	upload files project sidebar folder images
+latex	(cursor on \includegraphics{...})	the figure pops up under it; typing \includegraphics{ lists your figures	figure image preview picture
+latex	Space u g	grammar check off / on (it uses a few hundred MB while on)	grammar languagetool off on toggle
+latex	\sec  \begin{  \ref{  \cite{	the command menu (like Overleaf): commands, environments, your labels, your bib keys
+latex	Tab / Ctrl+j, Enter	move in the menu, take the entry (an environment gets its \end{...} too)
+latex	F5  or  the ▶ Compile button (top right)	compile the PDF; after that it compiles again every time you save (Overleaf's auto compile)	compile build pdf latexmk typeset make
+latex	click ✗ errors  /  Space l e	list of compile errors (also red marks on their lines); click one to jump there
+latex	the PDF button  /  Space l v	open the PDF beside gv (zathura) at the spot under the cursor	pdf view preview zathura output
+latex	Ctrl+click in the PDF	jump to that line in gv
+latex	Shift+F5  /  Space r s	stop compiling on save
+latex	,ll  ,lv  ,le  ,lc	vimtex's own keys (the leader for them is the comma): compile, view, errors, clean
+latex	Space l z	export the project as ~/Downloads/<folder>.zip: sources and figures, no build files (like Overleaf's Download source)	zip export download share send archive overleaf
+latex	alias, Tab, Enter	how the LaTeX aliases work: in insert mode type e.g. intgrl, Tab selects it, Enter writes it; type into the highlighted blank, Tab jumps to the next. They write plain LaTeX that compiles anywhere	snippet shortcut abbreviation alias template how
+latex	gtex  or  Space t  or  the GaussianTeX app	LaTeX projects: new from a template (JNCASR thesis, PRB paper, arXiv, Nature letter, notes, book, slides, blank), open, import a .zip, rename. They live in ~/GaussianTeX	project template new thesis paper prb revtex nature arxiv notes book slides beamer overleaf import zip rename name
+latex	Space u a	instant maths aliases off / on (// td sr ;a oo ...)	instant auto alias toggle
+terminal	Ctrl+\	floating terminal (again to hide it)
+terminal	Alt+1 / Alt+2	terminal below / on the right	shell console terminal
+terminal	Esc Esc	(in the floating terminal) press Esc twice quickly: normal mode, to scroll and copy
+debug	Space dt	set / remove a breakpoint on this line
+debug	Space ds	start debugging (Python)
+debug	Space do / Space di / Space du	step over / into / out
+debug	Space dc	continue to the next breakpoint
+debug	Space dq	stop debugging
+look	Space sc	change colorscheme (remembered; tokyonight = rice colors)	theme colorscheme colours colors
+look	Space ut	transparent background on / off
+look	Space ui	indent guides on / off
+look	Space uw	wrap long lines on / off
+misc	Space S s	restore the files you had open here last time
+misc	Space P	switch project
+misc	Space ;	dashboard
+misc	Space ?  or  Super+?	this dictionary: every gv / GaussianTeX key and LaTeX alias, searchable by what you want to do (also in the app menu)	help cheatsheet dictionary shortcuts keys find
+docs	Space s d	search the offline docs: NumPy, SciPy, Matplotlib, Python, pandas, LaTeX, Fortran, Bash. Enter on a module (scipy.integrate, numpy.linalg) opens its tree of functions (.. goes up); Enter on a function opens its page; q goes back to the list	documentation help manual reference numpy scipy matplotlib python api function
+docs	Space s D	docs for the word under the cursor (e.g. on linspace)	documentation help word lookup
+docs	:GvDocs install julia sympy	download more doc sets (names from devdocs.io); :GvDocs list shows what you have	documentation download add
+docs	Space s x	search Stack Exchange: Stack Overflow, TeX, Physics, Math, Unix, Ask Ubuntu (starts with the error on this line); 100 results at a time (Load more at the end); Enter reads the question and answers (maths typeset), q back to the results, o opens the browser	stackoverflow stack exchange internet question answer forum google
+ai	Space a a	Claude panel on the right (Claude Code in your project); Ctrl+q hides it	claude ai assistant chat help
+ai	Space a e	Claude: explain and fix the error on this line	claude debug error fix bug
+ai	Space a s (visual)	send the selection to Claude, then type your question	claude ask selection code
+ai	Space a f	Claude reviews the file: bugs, logic, numerics (in .tex: physics, maths, notation)	claude review check logic
+ai	Space a r  or  a (in the run card)	Claude finds why the last run (F5) failed	claude traceback run error crash
+ai	Space a l	(.tex) Claude fixes the LaTeX compile errors	claude latex compile error
+ai	Space a w	(.tex) Claude checks the paragraph: wording, grammar, physics logic	claude paragraph physics check grammar
+misc	:GvGuide	the guide to GaussianVim and GaussianTeX (with alias examples)	guide manual documentation help tutorial readme
+latex	Space l F  or  the ⚡ button	fast mode: typeset only the chapter you are writing (front matter included); much faster saves. Again for the whole document	fast speed quick compile chapter includeonly slow
+latex	Space l Q	full-quality PDF from your original figures (everyday compiles use print-resolution copies in .gvfast, your files untouched)	final quality print figures images resolution submit
+docs	Space s w	Wikipedia: online + the offline physics and maths Wikipedia; articles with typeset maths, Enter follows a link, t jumps to a section, q goes back	wikipedia encyclopedia article wiki definition explain concept offline
+docs	:GvWiki install	download the offline physics + maths Wikipedia (~650 MB, Kiwix)	wikipedia offline download kiwix zim
+look	Space u T  or  :GvTheme	switch GaussianVim's look: Material (title bar with buttons, rounded editor and file tree, rendered Wikipedia reader) or Classic (this look); gv restarts on the same file	theme look style material classic switch appearance skin
+look	gv-theme material  /  gv-theme classic	the same switch from a terminal (also sets the app-menu launchers); gv-theme alone says which is active	theme terminal command look switch
+latex	Space l h  or  Ctrl+Shift+P	(GaussianTeX window) fold the PDF pane away / bring it back; also the hide button above the PDF and the PDF tab at the right edge	pdf hide show fold pane panel
+latex	Ctrl+Shift+Left / Ctrl+Shift+Right	(GaussianTeX window) PDF wider / narrower; or drag the divider, or the 35% / 50% / 70% buttons (the width is remembered)	pdf width resize wider narrower size
+copy	Ctrl+Shift+C / Ctrl+Shift+V	(GaussianTeX / GaussianVim window) copy the selection / paste; Shift+drag selects anything on screen	copy paste clipboard window
+latex	Space l B  or  the Backup button	backups of the LaTeX project: back up now, restore (into a new folder, or over the project), auto backup on save (every 10 min, 30 kept), previous version of this file, gv config snapshots and history	backup restore history snapshot zip save version undo
+latex	gv file.tex	a .tex file opens in the GaussianTeX window (gv + the PDF); GTEX_TERMINAL=1 gv file.tex keeps it in the terminal	open tex window terminal
+windows	drag the title bar / edges of a panel	move / resize a floating panel (Claude, docs, wiki, answers, terminal); a mouse selection in it is copied	move resize panel float window drag mouse
+windows	Alt+arrows  /  Alt+Shift+arrows	move a floating panel / make it narrower, wider, shorter, taller	move resize panel float window
+windows	Alt+=  /  Alt+-  /  Alt+m	floating panel bigger / smaller / fill the screen and back	resize zoom maximize panel float
+windows	Ctrl+q	in a panel: hide it to the dock (bottom right of the status line, click to bring it back); in the editor: bring back the last hidden panel	hide dock minimize panel restore
+windows	Space u h	pick a hidden panel from the dock	dock hidden panel restore bring back
+misc	gv-doctor	(terminal) check that everything gv / GaussianTeX needs is installed: ✓ / ✗ / optional, with what each part is for	install check doctor missing dependencies broken setup
+misc	./install.sh  /  ./install-gv.sh	(in ~/gaussianvim) install or update everything / GaussianVim only, with all dependencies; on a new computer: curl -fsSL https://raw.githubusercontent.com/knight-dwell/gaussianvim/main/get.sh | bash	install update setup new computer dependencies

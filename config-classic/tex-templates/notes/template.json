@@ -1,0 +1,6 @@
+{
+  "name": "Maths / physics notes (contents, theorems, proofs)",
+  "description": "article with a table of contents, numbered theorem / lemma / definition / example boxes and proofs (amsthm), equations numbered by section, clickable references (cleveref)",
+  "main": "main.tex",
+  "order": 5
+}

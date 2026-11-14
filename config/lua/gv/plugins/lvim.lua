@@ -64,6 +64,15 @@ local specs = {
       vim.g.vimtex_view_method = "zathura"
       -- the PDF opens by itself after the first compile, once zathura is installed
       vim.g.vimtex_view_automatic = vim.fn.executable("zathura") == 1 and 1 or 0
+      -- in the GaussianTeX window (gtex) the PDF opens in its right pane instead (lua/gv/pdfdock.lua)
+      if vim.env.GV_DOCK and vim.env.GV_PDF_XID then
+        vim.g.vimtex_view_automatic = 0
+        vim.g.vimtex_view_zathura_options = "-e " .. vim.env.GV_PDF_XID
+          .. " -c " .. vim.fn.stdpath("config") .. "/zathura-dock"
+      elseif require("gv.pdfdock").window_available() then
+        -- gv in a plain terminal: the PDF button offers to dock it (reopen in the window)
+        vim.g.vimtex_view_automatic = 0
+      end
       vim.g.vimtex_quickfix_open_on_warning = 0
       vim.g.vimtex_quickfix_mode = 0              -- errors: the Compile button + marks (lua/gv/tex.lua)
       vim.g.vimtex_compiler_silent = 1            -- the button shows the progress

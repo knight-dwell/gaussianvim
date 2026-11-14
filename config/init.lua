@@ -38,7 +38,11 @@ require("lazy").setup({
 
 require("gv.colors")
 require("gv.keymaps")
+require("gv.floatwin")      -- panels: drag / resize / Ctrl+q hides to the dock; mouse selection copies
+require("gv.pdfdock")       -- the PDF pane on the right (when started by gtex)
 require("gv.lsp")
 require("gv.tex")
+require("gv.backup")       -- project backups: Space l B, auto on save
 require("gv.docs")          -- :GvDocs (offline docs)
+require("gv.themeswitch")  -- :GvTheme / Space u T: Material or Classic look
 require("gv.wiki")          -- :GvWiki (Wikipedia)

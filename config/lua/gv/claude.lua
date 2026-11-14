@@ -1,7 +1,11 @@
 -- Claude inside gv and GaussianTeX: Claude Code runs in a floating panel on the
 -- right (in your project folder), and these keys hand it the right context:
 --
---   Space a a   show / hide the Claude panel (Ctrl+q inside it also hides it)
+--   Space a a   show / hide the Claude panel (Ctrl+q inside it also hides it;
+--               while hidden it waits as "Claude" in the bar at the bottom right:
+--               click it, or Ctrl+q in the editor, to bring it back)
+--   drag its top edge to move it, its bottom / right edge to resize it
+--   (Alt+arrows / Alt+Shift+arrows too); select text with the mouse to copy it
 --   Space a e   explain and fix the error on this line
 --   Space a s   (visual) send the selection; you type your question after it
 --   Space a f   review this file: bugs, logic, physics / maths mistakes
@@ -35,7 +39,8 @@ local function opts(cwd)
     win = {
       position = "float", border = "rounded", title = " \u{f0335} Claude ", title_pos = "left",
       width = 0.44, height = 0.9, row = 1, col = math.floor(vim.o.columns * 0.55),
-      footer = " Ctrl+q hide · Space a a ", footer_pos = "right",
+      footer = " Ctrl+q hide (back: bottom bar) · drag edges · select copies ",
+      footer_pos = "right",
       keys = { hide = { "<C-q>", "hide", mode = { "t", "n" } } },
     },
   }
@@ -120,6 +125,22 @@ function M.paragraph()
   M.send(("Check this paragraph of @%s (lines %d-%d) for wording, grammar and the physics logic. Suggest a corrected version, keeping the LaTeX as is:\n```latex\n%s\n```"):format(
     rel(vim.api.nvim_buf_get_name(0)), s, e, table.concat(vim.list_slice(all, s, e), "\n")), true)
 end
+
+-- while hidden, Claude waits in the dock (the bar at the bottom right)
+local function show()
+  if not (term and term:valid()) then return M.toggle() end
+  term:show()
+  if term:win_valid() then vim.api.nvim_set_current_win(term.win); vim.cmd.startinsert() end
+end
+require("gv.dock").provide(function()
+  if term and term:valid() and not term:win_valid() then
+    return { key = "claude", name = "Claude", icon = "\u{f0335}", restore = show }
+  end
+end)
+vim.api.nvim_create_autocmd({ "WinClosed", "WinNew", "BufWinEnter" }, {
+  group = vim.api.nvim_create_augroup("gv_claude_dock", { clear = true }),
+  callback = function() vim.schedule(require("gv.dock").refresh) end,
+})
 
 -- files Claude changed: reload them (unless you changed them too)
 vim.o.autoread = true

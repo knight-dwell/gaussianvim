@@ -5,11 +5,26 @@
 #   gtex <folder>     open that project's main .tex
 #   gtex <file.tex>   open that file
 # Projects live in ~/GaussianTeX. Inside gv the same menu is Space t.
+#
+# It opens its own window (runner/gvwindow.py): gv on the left, the PDF on the
+# right, folding away when you don't need it. GTEX_TERMINAL=1 gtex ... (or no
+# X11 / XWayland) runs it in this terminal instead, with zathura as its own window.
 GV="$HOME/.local/bin/gv"
-lua() { exec "$GV" -c "lua vim.defer_fn(function() $1 end, 80)"; }
+WINDOW="$HOME/.config/gaussianvim/runner/gvwindow.py"
+
+run() {
+  if [[ -z $GV_DOCK && -z $GTEX_TERMINAL && -n $DISPLAY && -f $WINDOW ]] &&
+     python3 -c 'import gi; gi.require_version("Gtk", "3.0"); gi.require_version("Vte", "2.91")' 2>/dev/null; then
+    unset GV_NO_ROUTE
+    GDK_BACKEND=x11 setsid -f python3 "$WINDOW" "$@" >/dev/null 2>&1   # Wayland: through XWayland
+    exit 0
+  fi
+  exec "$@"
+}
+lua() { run "$GV" -c "lua vim.defer_fn(function() $1 end, 80)"; }
 case "${1:-}" in
   "")  lua 'require("gv.texproject").start()' ;;
   new) lua 'require("gv.texproject").new()' ;;
   *)   if [[ -d $1 ]]; then dir=$(realpath "$1"); lua "require('gv.texproject').open_dir([[$dir]])"
-       else exec "$GV" "$@"; fi ;;
+       else run "$GV" "$@"; fi ;;
 esac
