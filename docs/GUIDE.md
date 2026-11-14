@@ -240,6 +240,38 @@ colleague.
 - **gv config**: snapshots of `~/.config/gaussianvim` (daily, 15 kept) and its
   git history; any change can be undone.
 
+### Sharing with other gv users (like Overleaf's Share)
+
+**`Space l o`** (or the **Share** button) shares the project through a
+**private** GitHub repository: only the people you invite can see it. You need
+a free GitHub account and the GitHub CLI `gh` (the menu offers the one-time
+login; it opens your browser).
+
+- **Share on GitHub…**: shows what will be uploaded (build files such as `.aux`
+  `.log` `.bbl` and the compiled PDF stay out: everyone compiles their own) and
+  warns about files GitHub won't take (over 100 MB). Then it asks whom to invite.
+- **Invite someone…**: their GitHub username, or the email of their GitHub
+  account. GitHub emails them the invitation; a short "how to open it" message
+  is copied for you to paste into a mail or chat.
+- **Sync** (`Space l o`, then `s`): saves, takes the others' changes, sends
+  yours, and says who changed which files. Open files reload by themselves.
+  If you both changed the same lines, a card opens the marked spot
+  (`<<<<<<<` yours, `=======`, theirs `>>>>>>>`): keep the right text, delete
+  the marker lines, save, Sync again. Or pick *Keep my version* / *Take their
+  version* for the whole file.
+- **People with access…**: remove someone, or cancel an invitation.
+- Opening a shared project checks in the background (at most every 5 minutes)
+  and tells you when someone else changed it.
+
+On the other computer (yours at the lab, or your colleague's):
+**`gtex` → Open a shared project** (`Space t`, then `s`) lists your invitations
+(accept and open in one go), projects shared with you, and your own shared
+projects; they download into `~/GaussianTeX/`.
+
+It's not live typing: you each edit, then Sync, like taking turns. Live
+co-editing (Teamtype) may come later; the JNCASR network blocks the services it
+needs today.
+
 ## 6. GaussianTeX: writing
 
 - **Spelling**: wrong words get a red wavy underline as you type (not maths,

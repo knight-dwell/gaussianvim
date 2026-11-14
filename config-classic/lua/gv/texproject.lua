@@ -275,6 +275,8 @@ function M.start()
     { icon = "\u{f0770}", label = "Open a project…", key = "o", run = function() vim.schedule(M.open) end },
     { icon = "\u{f05b3}", label = "Import a .zip (Overleaf, arXiv, …)…", key = "i", run = function() vim.schedule(M.import) end },
     { icon = "\u{f0cb6}", label = "Rename a project…", key = "r", run = function() vim.schedule(M.rename) end },
+    { icon = "\u{f0497}", label = "Open a shared project (invitations, shared with you)…", key = "s",
+      run = function() vim.schedule(function() require("gv.share").open_shared() end) end },
   }
   local recent = projects()
   if #recent > 0 then items[#items + 1] = "-" end

@@ -10,7 +10,7 @@ embedded (zathura -e <id>), so it is not a separate window that pops up
 wherever the desktop puts it.
 
   title bar              Material pills (colors: runner/gvtheme.py): Compile, Files,
-                         Find, Copy, Paste, Backup, and the PDF width:
+                         Find, Copy, Paste, Backup, Share, and the PDF width:
                          35% / 50% / 70%, Show / Hide PDF
   the cards              gv and the PDF sit in rounded cards
   the divider            drag it: the PDF wider / narrower (the width is remembered)
@@ -293,6 +293,8 @@ class Window(Gtk.Window):
         self.backup_btn = pill("\U000f0b6c  Backup", "Back up / restore this project (Space l B)",
                                lambda *_: self.gv_call("v:lua.GvBackupMenu()"))
         bar.pack_start(self.backup_btn)
+        bar.pack_start(pill("\U000f0497  Share", "Share this project with gv users, Sync changes (Space l o)",
+                            lambda *_: self.gv_call("v:lua.GvShareMenu()")))
 
         self.pdf_btn = pill("\U000f0219  Show PDF", "Show / hide the PDF (Ctrl+Shift+P)",
                             lambda *_: self.toggle_pdf(), "gvprimary")

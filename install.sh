@@ -77,24 +77,24 @@ fi
 APT_BASE=(git curl wget ca-certificates unzip zip xz-utils tar rsync ripgrep fd-find build-essential gfortran
   python3 python3-pip python3-venv python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-vte-2.91
   "gir1.2-webkit2-4.1|gir1.2-webkit2-4.0" python3-numpy python3-scipy python3-matplotlib python3-pil python3-tk
-  xdotool zenity imagemagick ghostscript poppler-utils pandoc kitty fontconfig xclip wl-clipboard)
+  xdotool zenity imagemagick ghostscript poppler-utils pandoc kitty fontconfig xclip wl-clipboard gh)
 APT_TEX=(latexmk texlive-latex-extra texlive-science texlive-publishers texlive-bibtex-extra
   texlive-fonts-recommended texlive-pictures zathura zathura-pdf-poppler)
 DNF_BASE=(git curl wget ca-certificates unzip zip xz tar rsync ripgrep fd-find gcc gcc-c++ make gcc-gfortran
   python3 python3-pip python3-gobject gtk3 vte291 "webkit2gtk4.1|webkit2gtk4.0|webkit2gtk3"
   python3-numpy python3-scipy python3-matplotlib python3-pillow python3-tkinter
-  xdotool zenity ImageMagick ghostscript poppler-utils pandoc kitty fontconfig xclip wl-clipboard)
+  xdotool zenity ImageMagick ghostscript poppler-utils pandoc kitty fontconfig xclip wl-clipboard gh)
 DNF_TEX=(latexmk texlive-scheme-medium texlive-collection-latexextra texlive-collection-science
   texlive-collection-publishers texlive-collection-bibtexextra zathura "zathura-pdf-poppler|zathura-pdf-mupdf")
 PAC_BASE=(git curl wget ca-certificates unzip zip xz tar rsync ripgrep fd base-devel gcc-fortran
   python python-pip python-gobject gtk3 vte3 webkit2gtk-4.1 python-numpy python-scipy python-matplotlib
-  python-pillow tk xdotool zenity imagemagick ghostscript poppler "pandoc-cli|pandoc" kitty fontconfig xclip wl-clipboard)
+  python-pillow tk xdotool zenity imagemagick ghostscript poppler "pandoc-cli|pandoc" kitty fontconfig xclip wl-clipboard github-cli)
 PAC_TEX=(texlive-basic texlive-latex texlive-latexextra texlive-binextra texlive-science texlive-publishers
   texlive-bibtexextra texlive-fontsrecommended texlive-pictures zathura "zathura-pdf-poppler|zathura-pdf-mupdf")
 ZYP_BASE=(git curl wget ca-certificates unzip zip xz tar rsync ripgrep fd gcc gcc-c++ make gcc-fortran
   python3 python3-pip python3-gobject python3-gobject-Gdk typelib-1_0-Gtk-3_0 "typelib-1_0-Vte-2.91|typelib-1_0-Vte-2_91"
   "typelib-1_0-WebKit2-4_1|typelib-1_0-WebKit2-4_0" python3-numpy python3-scipy python3-matplotlib python3-Pillow
-  python3-tk xdotool zenity ImageMagick ghostscript poppler-tools pandoc kitty fontconfig xclip wl-clipboard)
+  python3-tk xdotool zenity ImageMagick ghostscript poppler-tools pandoc kitty fontconfig xclip wl-clipboard gh)
 ZYP_TEX=(texlive-latexmk texlive-scheme-medium texlive-collection-latexextra texlive-collection-science
   texlive-collection-publishers texlive-collection-bibtexextra zathura zathura-plugin-pdf-poppler)
 

@@ -42,6 +42,7 @@ require("gv.floatwin")      -- panels: drag / resize / Ctrl+q hides to the dock;
 require("gv.pdfdock")       -- the PDF pane on the right (when started by gtex)
 require("gv.lsp")
 require("gv.tex")
+require("gv.share")        -- share a LaTeX project with gv users: private GitHub repo, Sync, invite (Space l o)
 require("gv.backup")       -- project backups: Space l B, auto on save
 require("gv.docs")          -- :GvDocs (offline docs)
 require("gv.themeswitch")  -- :GvTheme / Space u T: Material or Classic look

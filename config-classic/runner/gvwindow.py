@@ -7,7 +7,7 @@ The left side is a terminal (VTE) running gv; the right side holds zathura,
 embedded (zathura -e <id>), so it is not a separate window that pops up
 wherever the desktop puts it.
 
-  toolbar (top)          Compile, Copy, Paste, Backup, and the PDF width:
+  toolbar (top)          Compile, Copy, Paste, Backup, Share, and the PDF width:
                          35% / 50% / 70%, hide / show
   the divider            drag it: the PDF wider / narrower (the width is remembered)
   Ctrl+Shift+Left/Right  the PDF wider / narrower
@@ -225,6 +225,7 @@ class Window(Gtk.Window):
             ("⎘ Copy", "Copy the selection (Ctrl+Shift+C)", lambda *_: self.copy()),
             ("📋 Paste", "Paste (Ctrl+Shift+V)", lambda *_: self.paste()),
             ("💾 Backup", "Back up / restore this project (Space l B)", lambda *_: self.gv_call("v:lua.GvBackupMenu()")),
+            ("👥 Share", "Share this project with gv users, Sync changes (Space l o)", lambda *_: self.gv_call("v:lua.GvShareMenu()")),
         ]
         for i, (lbl, tip, cb) in enumerate(left):
             bar.pack_start(self.flat_button(lbl, tip, cb), False, False, 0)

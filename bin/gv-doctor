@@ -37,6 +37,7 @@ check "pandoc"             "docs, Stack Exchange, Wikipedia as text" 1 have pand
 check "xclip / wl-copy"    "the system clipboard" 1 bash -c 'command -v xclip || command -v wl-copy'
 check "kitty"              "plots and maths drawn inside gv (optional)" 0 have kitty
 check "claude"             "the Claude panel, Space a a (optional)" 0 bash -c 'command -v claude || test -x ~/.local/bin/claude'
+check "gh (GitHub CLI)"    "share LaTeX projects with gv users, Space l o (optional)" 0 have gh
 
 echo
 echo "Windows (Material look, Reader)"
