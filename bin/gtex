@@ -12,7 +12,19 @@
 GV="$HOME/.local/bin/gv"
 WINDOW="$HOME/.config/gaussianvim/runner/gvwindow.py"
 
+# a project inside ~/Ms_thesis opens on workspace 5 (the MS thesis workspace)
+thesis_workspace() {
+  local t="$HOME/Ms_thesis" a r
+  [[ -d $t && -n $DISPLAY ]] && command -v xdotool >/dev/null || return 0
+  for a in "$@"; do
+    [[ -e $a ]] || continue
+    r=$(realpath -- "$a" 2>/dev/null) || continue
+    if [[ $r == "$t" || $r == "$t"/* ]]; then xdotool set_desktop 4 2>/dev/null; sleep 0.15; return 0; fi
+  done
+}
+
 run() {
+  thesis_workspace "${ARGS[@]}"
   if [[ -z $GV_DOCK && -z $GTEX_TERMINAL && -n $DISPLAY && -f $WINDOW ]] &&
      python3 -c 'import gi; gi.require_version("Gtk", "3.0"); gi.require_version("Vte", "2.91")' 2>/dev/null; then
     unset GV_NO_ROUTE
@@ -21,6 +33,7 @@ run() {
   fi
   exec "$@"
 }
+ARGS=("$@")
 lua() { run "$GV" -c "lua vim.defer_fn(function() $1 end, 80)"; }
 case "${1:-}" in
   "")  lua 'require("gv.texproject").start()' ;;

@@ -248,11 +248,35 @@ return {
                 backdrop = false, width = 34, min_width = 30, height = 0, position = "left",
                 border = "none", box = "vertical",
                 { win = "input", height = 1, border = "rounded", title = " \u{f0349} {title} {live} {flags}", title_pos = "left" },
-                { win = "list", border = "rounded", title = " \u{f024b}  Files ", title_pos = "center" },
+                { win = "list", border = "rounded", title = " \u{f024b} Files · ⌫ up · ~ home · O go to… ", title_pos = "center" },
               },
             },
+            -- moving around: ⌫ / - parent folder, ~ home, O any folder (a folder chooser), . make
+            -- the folder under the cursor the top of the tree
+            actions = {
+              gv_home = function(picker) picker:set_cwd(vim.fn.expand("~")); picker:find() end,
+              gv_goto = function(picker)
+                local function go(dir)
+                  dir = dir and vim.fs.normalize(vim.fn.fnamemodify(vim.trim(dir), ":p")) or ""
+                  if dir ~= "" and vim.fn.isdirectory(dir) == 1 then
+                    picker:set_cwd(dir); picker:find()
+                  elseif dir ~= "" then
+                    vim.notify("Not a folder: " .. dir, vim.log.levels.WARN, { title = "Files" })
+                  end
+                end
+                if vim.fn.executable("zenity") == 1 and (vim.env.DISPLAY or "") ~= "" then
+                  vim.system({ "zenity", "--file-selection", "--directory", "--title=Show this folder in Files",
+                    "--filename=" .. picker:cwd() .. "/" }, { text = true }, function(r)
+                    vim.schedule(function() if r.code == 0 then go(r.stdout) end end)
+                  end)
+                else
+                  Snacks.input({ prompt = "Go to folder", default = picker:cwd() .. "/", completion = "dir" }, go)
+                end
+              end,
+            },
             win = {
-              list = { wo = { winhighlight = "Normal:GvExplorer,NormalNC:GvExplorer,FloatBorder:GvExplorerBorder,"
+              list = { keys = { ["~"] = "gv_home", ["O"] = "gv_goto", ["-"] = "explorer_up" },
+                wo = { winhighlight = "Normal:GvExplorer,NormalNC:GvExplorer,FloatBorder:GvExplorerBorder,"
                 .. "FloatTitle:GvExplorerTitle,CursorLine:GvExplorerCursor,SnacksPickerListCursorLine:GvExplorerCursor,"
                 .. "SnacksPickerBorder:GvExplorerBorder,SnacksPickerListBorder:GvExplorerBorder,SnacksPickerTitle:GvExplorerTitle,"
                 .. "SnacksPickerListTitle:GvExplorerTitle,SnacksPickerList:GvExplorer,WinSeparator:GvExplorerBorder" } },
