@@ -221,10 +221,49 @@ if M.active() then
     end,
   })
   -- closing the window asks gv to quit, like :qa (asks about unsaved files)
+  -- (✕ or Super+Q). Robust: leave insert / terminal mode and close menus / pickers
+  -- first; with nothing unsaved, quit even if a terminal job (AI chat, shell) runs;
+  -- with unsaved files, ask Save / Discard / Cancel; never fail silently.
+  local function unsaved()
+    local list = {}
+    for _, b in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.api.nvim_buf_is_loaded(b) and vim.bo[b].modified
+          and (vim.bo[b].buftype == "" or vim.bo[b].buftype == "acwrite") then
+        local n = vim.api.nvim_buf_get_name(b)
+        list[#list + 1] = n ~= "" and vim.fn.fnamemodify(n, ":~:.") or "[No Name]"
+      end
+    end
+    return list
+  end
   _G.GvWindowClose = function()
     vim.schedule(function()
-      if vim.fn.mode() ~= "n" then vim.cmd("stopinsert") end
-      pcall(vim.cmd, "confirm qa")
+      local m = vim.fn.mode()
+      if m:sub(1, 1) == "t" then
+        vim.api.nvim_feedkeys(vim.keycode("<C-\\><C-n>"), "n", false)
+      elseif m ~= "n" then
+        pcall(vim.cmd, "stopinsert")
+        if m:match("^[vVs\22]") then vim.api.nvim_feedkeys(vim.keycode("<Esc>"), "n", false) end
+      end
+      -- after the mode change has happened
+      vim.schedule(function()
+        for _, w in ipairs(vim.api.nvim_list_wins()) do
+          if vim.api.nvim_win_is_valid(w) and vim.api.nvim_win_get_config(w).relative ~= "" then
+            pcall(vim.api.nvim_win_close, w, true)
+          end
+        end
+        local left = unsaved()
+        if #left == 0 then
+          vim.cmd("silent! wall")                  -- nothing to lose; ends terminal jobs too
+          vim.cmd("qa!")
+          return
+        end
+        send("focus-term")                         -- bring the question into view
+        local ok, err = pcall(vim.cmd, "confirm qa")
+        if not ok and not tostring(err):match("E5108") then
+          vim.notify("Couldn't close: " .. tostring(err):gsub("^.-:%d+: ", "")
+            .. "\nUnsaved: " .. table.concat(left, ", "), vim.log.levels.WARN, { title = "GaussianTeX" })
+        end
+      end)
     end)
     return ""
   end

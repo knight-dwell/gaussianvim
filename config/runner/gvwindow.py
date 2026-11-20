@@ -33,6 +33,7 @@ import signal
 import socket
 import subprocess
 import sys
+import threading
 
 if os.environ.get("DISPLAY") and os.environ.get("XDG_SESSION_TYPE") == "wayland":
     os.environ["GDK_BACKEND"] = "x11"     # Wayland: run through XWayland (embedding zathura needs X11)
@@ -92,6 +93,12 @@ MIN_PDF_PX = 620
 
 STATE = os.path.join(os.environ.get("XDG_STATE_HOME") or os.path.expanduser("~/.local/state"),
                      "gaussianvim", "gvwindow.json")
+
+
+def reap(proc):
+    """wait for a short-lived helper process in the background (no zombies)"""
+    threading.Thread(target=proc.wait, daemon=True).start()
+    return proc
 
 
 def load_state():
@@ -373,8 +380,8 @@ class Window(Gtk.Window):
             return
         addr, binary = self.nvim
         try:
-            subprocess.Popen([binary, "--server", addr, "--remote-expr", expr],
-                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            reap(subprocess.Popen([binary, "--server", addr, "--remote-expr", expr],
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
         except OSError:
             pass
         self.term.grab_focus()
@@ -507,8 +514,8 @@ class Window(Gtk.Window):
             return
         addr, binary = self.nvim
         try:
-            subprocess.Popen([binary, "--server", addr, "--remote-expr", f"v:lua.GvPdfState('{self.state()}')"],
-                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            reap(subprocess.Popen([binary, "--server", addr, "--remote-expr", f"v:lua.GvPdfState('{self.state()}')"],
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
         except OSError:
             pass
 
@@ -555,8 +562,8 @@ class Window(Gtk.Window):
         if self.nvim:
             addr, binary = self.nvim
             try:
-                subprocess.Popen([binary, "--server", addr, "--remote-expr", "v:lua.GvWindowClose()"],
-                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                reap(subprocess.Popen([binary, "--server", addr, "--remote-expr", "v:lua.GvWindowClose()"],
+                                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL))
                 return True
             except OSError:
                 pass
