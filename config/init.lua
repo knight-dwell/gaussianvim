@@ -46,4 +46,5 @@ require("gv.share")        -- share a LaTeX project with gv users: private GitHu
 require("gv.backup")       -- project backups: Space l B, auto on save
 require("gv.docs")          -- :GvDocs (offline docs)
 require("gv.themeswitch")  -- :GvTheme / Space u T: Material or Classic look
+require("gv.tidybuffers")   -- no leftover "[No Name]" tabs when a file opens
 require("gv.wiki")          -- :GvWiki (Wikipedia)

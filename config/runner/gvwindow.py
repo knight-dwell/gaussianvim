@@ -238,6 +238,7 @@ class Window(Gtk.Window):
         self.add(outer)
 
         self.connect("key-press-event", self.on_key)
+        self.connect("size-allocate", self.on_win_alloc)
         self.connect("delete-event", self.on_delete)
         self.maximize()
         self.show_all()
@@ -310,7 +311,38 @@ class Window(Gtk.Window):
         self.width_box.pack_start(seg(*self.frac_btns.values()), False, False, 0)
         bar.pack_end(self.width_box)
         self.mark_frac()
+        # narrow windows (a tiling window manager gives GTeX half the screen): the pill
+        # labels shrink with "…" (icons stay) instead of pushing the window off-screen
+        for b in [self.compile_btn, self.backup_btn, self.pdf_btn, *self.frac_btns.values()] + \
+                 [c for box in bar.get_children() if isinstance(box, Gtk.Box) for c in box.get_children()
+                  if isinstance(c, Gtk.Button)]:
+            lbl = b.get_child()
+            if isinstance(lbl, Gtk.Label):
+                lbl.set_ellipsize(Pango.EllipsizeMode.END)
         return bar
+
+    def on_win_alloc(self, _w, alloc):
+        """compact title bar when the window is narrow: the PDF-width presets go first,
+        then the secondary pills show just their icon (the tooltip still names them)"""
+        wide = alloc.width >= 1350
+        if self.width_box.get_visible() != wide:
+            self.width_box.set_visible(wide)
+            self.width_box.set_no_show_all(not wide)
+        compact = alloc.width < 1150
+        if getattr(self, "_compact", None) == compact:
+            return
+        self._compact = compact
+        if not hasattr(self, "_full_labels"):
+            self._full_labels = {}
+            for box in self.headerbar.get_children():
+                kids = box.get_children() if isinstance(box, Gtk.Box) else [box]
+                for b in kids:
+                    if isinstance(b, Gtk.Button) and b not in (self.compile_btn, self.pdf_btn) \
+                            and b not in self.frac_btns.values() and isinstance(b.get_label(), str):
+                        self._full_labels[b] = b.get_label()
+        for b, full in self._full_labels.items():
+            b.set_label(full.split("  ")[0] if compact and "  " in full else full)
+        self.compile_btn.set_label("\u25b6  Compile")
 
     def show_tex_buttons(self, on):
         for w in (self.compile_btn, self.backup_btn, self.pdf_btn, self.width_box):

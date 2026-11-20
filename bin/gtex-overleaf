@@ -1,0 +1,230 @@
+#!/usr/bin/python3
+"""gtex-overleaf: two-way sync between Overleaf and GaussianTeX through Overleaf's
+Git integration. Your Git token lives in the GNOME keyring, never in a file.
+
+  gtex-overleaf token                 store / replace your Overleaf Git token (hidden prompt)
+  gtex-overleaf clone <link> [name]   clone an Overleaf project into ~/GaussianTeX/<name>
+                                      <link>: the project's URL, its git link, or its id
+  gtex-overleaf sync [dir]            commit your edits, pull co-authors' edits, push
+  gtex-overleaf status [dir]          is this project linked, and is anything unsynced?
+  gtex-overleaf credential get        (used by git itself: hands the token to git.overleaf.com only)
+
+The token is only ever given to https://git.overleaf.com (set up by `token`).
+LaTeX build files (.aux, .log, .pdf, …) are never pushed.
+"""
+import getpass
+import os
+import re
+import subprocess
+import sys
+
+import gi
+
+gi.require_version("Secret", "1")
+from gi.repository import Secret  # noqa: E402
+
+HOST = "git.overleaf.com"
+ROOT = os.path.expanduser("~/GaussianTeX")
+SCHEMA = Secret.Schema.new("io.github.gaussiantex.Overleaf", Secret.SchemaFlags.NONE,
+                           {"service": Secret.SchemaAttributeType.STRING})
+ATTRS = {"service": "overleaf-git"}
+SELF = os.path.realpath(__file__)
+BUILD_FILES = """# GaussianTeX: LaTeX build files are never pushed to Overleaf
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.xdv
+*.run.xml
+*-blx.bib
+*.bcf
+/main.pdf
+"""
+
+
+def die(msg, code=1):
+    print(msg, file=sys.stderr)
+    sys.exit(code)
+
+
+def git(*args, cwd=None, check=True, capture=False):
+    r = subprocess.run(["git", *args], cwd=cwd, text=True,
+                       capture_output=capture)
+    if check and r.returncode != 0:
+        die(f"git {' '.join(args)} failed" + (f":\n{r.stderr.strip()}" if capture and r.stderr else ""), r.returncode)
+    return r
+
+
+def get_token():
+    return Secret.password_lookup_sync(SCHEMA, ATTRS, None)
+
+
+def setup_git_helper():
+    """Tell git to ask us (only) for git.overleaf.com credentials."""
+    key = f"credential.https://{HOST}"
+    git("config", "--global", "--replace-all", f"{key}.helper", f"!{SELF} credential")
+    git("config", "--global", f"{key}.username", "git")
+
+
+def cmd_token(_args):
+    if sys.stdin.isatty():
+        tok = getpass.getpass("Overleaf Git token (starts with olp_, input hidden): ").strip()
+    else:   # launched from GTeX without a terminal: ask with a password dialog
+        r = subprocess.run(["zenity", "--password", "--title=Overleaf Git token"], capture_output=True, text=True)
+        tok = r.stdout.strip()
+    if not tok:
+        die("No token entered; nothing changed.")
+    if not tok.startswith("olp_"):
+        die("That doesn't look like an Overleaf Git token (they start with olp_). Nothing changed.")
+    Secret.password_store_sync(SCHEMA, ATTRS, Secret.COLLECTION_DEFAULT, "Overleaf Git token (GaussianTeX)", tok, None)
+    setup_git_helper()
+    print("Token saved in the GNOME keyring. git will use it for git.overleaf.com only.")
+
+
+def cmd_credential(args):
+    """git credential-helper protocol: answer `get` for git.overleaf.com only."""
+    if not args or args[0] != "get":
+        return                       # store / erase: the keyring is managed by `token`
+    req = dict(line.split("=", 1) for line in sys.stdin.read().splitlines() if "=" in line)
+    if req.get("host") != HOST or req.get("protocol") != "https":
+        return
+    tok = get_token()
+    if tok:
+        print("username=git")
+        print(f"password={tok}")
+
+
+def project_id(link):
+    link = link.strip()
+    m = re.search(r"(?:overleaf\.com/(?:project/|read/)?|^)([0-9a-f]{24})\b", link)
+    if not m:
+        die("Couldn't find an Overleaf project id in that link.\n"
+            "Use the project's address (https://www.overleaf.com/project/…) or its git link "
+            "(Menu → Sync → Git in Overleaf).")
+    return m.group(1)
+
+
+def folder_name(name):
+    return re.sub(r"[^\w.\- ]", "", name).strip().replace(" ", "_")
+
+
+def exclude_build_files(repo):
+    path = os.path.join(repo, ".git", "info", "exclude")
+    try:
+        cur = open(path).read()
+    except OSError:
+        cur = ""
+    if "GaussianTeX: LaTeX build files" not in cur:
+        with open(path, "a") as fh:
+            fh.write(("\n" if cur and not cur.endswith("\n") else "") + BUILD_FILES)
+
+
+def require_token():
+    if not get_token():
+        die("No Overleaf token stored yet. Run:  gtex-overleaf token")
+    setup_git_helper()
+
+
+def cmd_clone(args):
+    if not args:
+        die("usage: gtex-overleaf clone <overleaf link or id> [name]")
+    require_token()
+    pid = project_id(args[0])
+    name = folder_name(args[1]) if len(args) > 1 else f"overleaf-{pid[:8]}"
+    dest = os.path.join(ROOT, name)
+    if os.path.exists(dest):
+        die(f"~/GaussianTeX/{name} exists already; pick another name.")
+    os.makedirs(ROOT, exist_ok=True)
+    r = git("clone", "--quiet", f"https://{HOST}/{pid}", dest, check=False, capture=True)
+    if r.returncode != 0:
+        err = r.stderr or ""
+        if "no git access" in err:
+            die("Overleaf says Git isn't enabled for this project. Your token works; this project just "
+                "can't be cloned. Usually that's because its OWNER's Overleaf plan has no Git integration "
+                "(e.g. a project someone shared with you), or the link points to another project.\n"
+                "Check in Overleaf: open the project → Menu → Sync → Git. If it shows a git link, cloning "
+                "will work; if it says Upgrade, use Menu → Download → Source and GTeX's 'Import a .zip'.")
+        if "Authentication failed" in err or "401" in err:
+            die("Overleaf didn't accept the token. Make a new one (Account settings → Git integration) "
+                "and run: gtex-overleaf token")
+        die("Couldn't clone from Overleaf:\n" + err.strip())
+    exclude_build_files(dest)
+    print(dest)
+
+
+def repo_of(path):
+    path = os.path.abspath(path or ".")
+    if os.path.isfile(path):
+        path = os.path.dirname(path)
+    r = git("rev-parse", "--show-toplevel", cwd=path, check=False, capture=True)
+    if r.returncode != 0:
+        die("This project isn't linked to Overleaf (it isn't a git clone). "
+            "Use 'Clone from Overleaf' to get a linked copy.")
+    top = r.stdout.strip()
+    url = git("remote", "get-url", "origin", cwd=top, check=False, capture=True).stdout.strip()
+    if HOST not in url:
+        die("This project's git remote isn't Overleaf; not syncing it.")
+    return top
+
+
+def cmd_sync(args):
+    require_token()
+    top = repo_of(args[0] if args else ".")
+    exclude_build_files(top)
+    git("add", "-A", cwd=top)
+    dirty = git("diff", "--cached", "--quiet", cwd=top, check=False).returncode != 0
+    merging = os.path.exists(os.path.join(top, ".git", "MERGE_HEAD"))   # finishing a resolved conflict
+    if merging:
+        left = git("diff", "--name-only", "--diff-filter=U", cwd=top, check=False, capture=True).stdout.split()
+        still = [f for f in git("grep", "-l", "^<<<<<<< ", cwd=top, check=False, capture=True).stdout.split()]
+        if left or still:
+            die("Still unresolved: " + ", ".join(sorted(set(left + still))) +
+                "\nKeep the right text between the <<<<<<< and >>>>>>> markers, delete the markers, save, then Sync.", 2)
+        git("commit", "--quiet", "--no-edit", cwd=top)
+        dirty = True
+    elif dirty:
+        git("commit", "--quiet", "-m", "Edited in GaussianTeX", cwd=top)
+    r = git("pull", "--no-rebase", "--no-edit", "--quiet", cwd=top, check=False, capture=True)
+    if r.returncode != 0:
+        conflicts = git("diff", "--name-only", "--diff-filter=U", cwd=top, check=False, capture=True).stdout.split()
+        if conflicts:
+            die("You and a co-author changed the same lines in: " + ", ".join(conflicts) + "\n"
+                "Open them, keep the right version between the <<<<<<< and >>>>>>> markers, save, "
+                "then Sync again.", 2)
+        die("Couldn't get the changes from Overleaf:\n" + (r.stderr or "").strip())
+    git("push", "--quiet", cwd=top, check=False)
+    ahead = git("rev-list", "--count", "@{u}..HEAD", cwd=top, check=False, capture=True).stdout.strip()
+    if ahead not in ("", "0"):
+        die("Pulled from Overleaf, but pushing your edits failed. Check your token, then Sync again.")
+    print("Synced with Overleaf" + (" (your edits were sent)" if dirty else ""))
+
+
+def cmd_status(args):
+    top = repo_of(args[0] if args else ".")
+    changed = git("status", "--porcelain", cwd=top, capture=True).stdout.strip()
+    print(f"Linked to Overleaf: {os.path.basename(top)}")
+    print("Unsynced edits here: " + ("yes" if changed else "none"))
+
+
+def main():
+    if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
+        print(__doc__)
+        return
+    cmd, args = sys.argv[1], sys.argv[2:]
+    {"token": cmd_token, "credential": cmd_credential, "clone": cmd_clone,
+     "sync": cmd_sync, "status": cmd_status}.get(cmd, lambda a: die(__doc__))(args)
+
+
+if __name__ == "__main__":
+    main()

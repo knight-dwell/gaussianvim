@@ -8,6 +8,8 @@
 --   Import a .zip    a project from Overleaf, arXiv, a colleague: unpacked into
 --                    ~/GaussianTeX and opened
 --   Rename           a project's folder (open files are saved and reopened)
+--   Overleaf         Clone from Overleaf / Sync (Git integration; token in the
+--                    GNOME keyring, see ~/.local/bin/gtex-overleaf)
 --
 -- Templates live in ~/.config/gaussianvim/tex-templates/<name>/ (a template.json
 -- and the files); {{TITLE}}, {{AUTHOR}}, {{DATE}} are filled in. Copy a folder
@@ -268,6 +270,64 @@ function M.rename()
   end)
 end
 
+-- ── Overleaf (Git integration) ─────────────────────────────────────────────
+-- gtex-overleaf (~/.local/bin) does the work; the token lives in the GNOME keyring.
+local OL = vim.fn.expand("~/.local/bin/gtex-overleaf")
+
+local function overleaf(args, on_ok)
+  vim.system(vim.list_extend({ OL }, args), { text = true }, function(r)
+    vim.schedule(function()
+      local out = vim.trim((r.stdout or "") .. "\n" .. (r.stderr or ""))
+      if r.code == 0 then on_ok(vim.trim(r.stdout or ""))
+      else notify(out ~= "" and out or "Overleaf sync failed", r.code == 2 and vim.log.levels.WARN or vim.log.levels.ERROR) end
+    end)
+  end)
+end
+
+-- make sure a token is stored (asks with a hidden password dialog the first time)
+local function with_token(then_do)
+  vim.system({ "/usr/bin/python3", "-c",
+    "import gi; gi.require_version('Secret','1'); from gi.repository import Secret as S; "
+    .. "s=S.Schema.new('io.github.gaussiantex.Overleaf',S.SchemaFlags.NONE,{'service':S.SchemaAttributeType.STRING}); "
+    .. "raise SystemExit(0 if S.password_lookup_sync(s,{'service':'overleaf-git'},None) else 1)" }, {}, function(r)
+    vim.schedule(function()
+      if r.code == 0 then return then_do() end
+      notify("Paste your Overleaf Git token (Overleaf → Account settings → Git integration)")
+      overleaf({ "token" }, function() then_do() end)
+    end)
+  end)
+end
+
+function M.clone_overleaf()
+  Snacks.input({ prompt = "Overleaf project link (or its git link)" }, function(link)
+    if not link or vim.trim(link) == "" then return end
+    Snacks.input({ prompt = "Name for it in ~/GaussianTeX" }, function(name)
+      if not name or vim.trim(name) == "" then return end
+      with_token(function()
+        notify("Cloning from Overleaf…")
+        overleaf({ "clone", link, name }, function(dir)
+          M.open_dir(dir)
+          notify("Linked to Overleaf: Space t → Sync with Overleaf sends and gets changes")
+        end)
+      end)
+    end)
+  end)
+end
+
+-- sync the project of the current file (or pick one)
+function M.sync_overleaf()
+  local file = vim.api.nvim_buf_get_name(0)
+  local dir = file ~= "" and vim.fs.dirname(file) or vim.fn.getcwd()
+  pcall(vim.cmd, "silent! wall")
+  with_token(function()
+    notify("Syncing with Overleaf…")
+    overleaf({ "sync", dir }, function(msg)
+      vim.cmd("silent! checktime")          -- reload files co-authors changed
+      notify(msg ~= "" and msg or "Synced with Overleaf")
+    end)
+  end)
+end
+
 -- the menu (gtex, Space t, t on the start screen)
 function M.start()
   local items = {
@@ -277,6 +337,9 @@ function M.start()
     { icon = "\u{f0cb6}", label = "Rename a project…", key = "r", run = function() vim.schedule(M.rename) end },
     { icon = "\u{f0497}", label = "Open a shared project (invitations, shared with you)…", key = "s",
       run = function() vim.schedule(function() require("gv.share").open_shared() end) end },
+    "-",
+    { icon = "\u{f02a2}", label = "Clone from Overleaf…", key = "c", run = function() vim.schedule(M.clone_overleaf) end },
+    { icon = "\u{f04e6}", label = "Sync this project with Overleaf", key = "y", run = function() vim.schedule(M.sync_overleaf) end },
   }
   local recent = projects()
   if #recent > 0 then items[#items + 1] = "-" end

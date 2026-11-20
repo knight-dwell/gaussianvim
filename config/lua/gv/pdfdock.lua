@@ -110,7 +110,7 @@ function M.open(pdf, line, col, file)
   local fwd = (line and file) and { "--synctex-forward", ("%d:%d:%s"):format(line, col or 1, file) } or {}
   if alive() and Z.pdf == pdf then
     if #fwd > 0 then
-      local cmd = { "zathura" }
+      local cmd = { "zathura", "--synctex-pid", tostring(Z.job.pid) }
       vim.list_extend(cmd, fwd)
       cmd[#cmd + 1] = pdf
       vim.system(cmd, { detach = true })
@@ -121,7 +121,8 @@ function M.open(pdf, line, col, file)
   -- Ctrl+click in the PDF: back to the line in gv (vimtex's inverse search)
   local inverse = vim.v.progpath .. [[ --headless -c "VimtexInverseSearch %{line}:%{column} '%{input}'"]]
   local cmd = { "zathura", "-e", XID, "-c", vim.fn.stdpath("config") .. "/zathura-dock", "-x", inverse }
-  vim.list_extend(cmd, fwd)
+  -- no --synctex-forward on the first start: if another window's zathura shows the same
+  -- PDF, zathura hands the jump to THAT one and quits, and this pane stays empty
   cmd[#cmd + 1] = pdf
   local me = {}
   local ok, job = pcall(vim.system, cmd, { text = true }, function()
@@ -138,6 +139,16 @@ function M.open(pdf, line, col, file)
   send("pid " .. job.pid)
   -- the pane opens by itself when zathura has embedded; keep the keyboard in gv
   vim.defer_fn(function() send("focus-term") end, 900)
+  -- then jump to the cursor's spot, in OUR viewer (by its pid)
+  if #fwd > 0 then
+    vim.defer_fn(function()
+      if Z.me ~= me or not Z.alive then return end
+      local c = { "zathura", "--synctex-pid", tostring(job.pid) }
+      vim.list_extend(c, fwd)
+      c[#c + 1] = pdf
+      vim.system(c, { detach = true })
+    end, 1200)
+  end
 end
 
 local function pdf_path()
@@ -183,6 +194,15 @@ if M.active() then
       vim.defer_fn(function()
         if not alive() and M.view() then opened_once = true end
       end, 100)
+    end,
+  })
+  -- opening a project: show its PDF right away when it has been compiled before
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "VimtexEventInitPost", group = grp,
+    callback = function()
+      vim.defer_fn(function()
+        if not alive() and vim.b.vimtex ~= nil then M.view() end
+      end, 250)
     end,
   })
   -- Ctrl+click in the PDF jumped here: the keyboard comes back to gv

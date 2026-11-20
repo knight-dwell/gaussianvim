@@ -23,7 +23,7 @@ rs "$HOME/.local/share/gaussianvim/brand/" "$R/share/brand/"
 mkdir -p "$R/bin" "$R/applications"
 mkdir -p "$R/share/zathura" && cp "$HOME/.config/zathura/zathurarc" "$R/share/zathura/zathurarc"
 cp "$HOME/.local/share/gaussianvim/GUIDE.md" "$R/docs/GUIDE.md"
-for b in gv gtex gv-dict vimhelp gv-theme gv-doctor; do
+for b in gv gtex gtex-overleaf gv-dict vimhelp gv-theme gv-doctor; do
   if [[ -f $HOME/.local/bin/$b ]]; then cp "$HOME/.local/bin/$b" "$R/bin/$b"; fi
 done
 for d in gaussianvim gaussiantex gaussianvim-dictionary; do
